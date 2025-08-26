@@ -1,6 +1,7 @@
 "use client";
 
 import { useSimulationDrawer } from "@/store/ui";
+import { exportCsv } from "@/services/mockApi";
 
 type ActionItem = {
   id: string;
@@ -27,7 +28,7 @@ export default function ActionQueue({ items }: { items?: ActionItem[] }){
             <div className="mt-1 text-sm text-slate-600 dark:text-slate-400">{a.recommendation}</div>
             <div className="mt-2 flex items-center gap-2">
               <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50" onClick={()=>{ setDefaults({ role: a.role, percent: a.percent }); setOpen(true); }}>Simulate</button>
-              <a className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50" href="/api/copilot/ask">Export</a>
+              <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50" onClick={async()=>{ const url = await exportCsv('demo-se'); const link=document.createElement('a'); link.href=url; link.download='adjustments.csv'; link.click(); }}>Export</button>
             </div>
           </li>
         ))}

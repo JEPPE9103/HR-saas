@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { useSimulationDrawer } from "@/store/ui";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
 export function SimulationDrawer() {
   const { open, setOpen, defaults, setResultText, resultText } = useSimulationDrawer();
+  const sp = useSearchParams();
+  const datasetId = sp.get("datasetId") || "demo-se";
   const [role, setRole] = useState(defaults?.role ?? "Engineer");
   const [percent, setPercent] = useState(defaults?.percent ?? 5);
   const [result, setResult] = useState<any>(null);
@@ -15,7 +18,7 @@ export function SimulationDrawer() {
     const res = await fetch("/api/copilot/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId: "local", datasetId: "demo-se", message: `/simulate role:"${role}" +${percent}%` }),
+      body: JSON.stringify({ sessionId: "local", datasetId, message: `/simulate role:"${role}" +${percent}%` }),
     });
     const data = await res.json();
     setResult(data);

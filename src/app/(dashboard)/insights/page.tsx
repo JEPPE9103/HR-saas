@@ -87,7 +87,13 @@ export default function InsightsPage(){
   }, [tableData, severity, queryText]);
 
   function simulate(id:string){ /* open modal, pass id */ }
-  function exportOne(id:string){ /* call export */ }
+  function exportOne(id:string){
+    // Hook to export a brief for a single insight (mock)
+    const a = document.createElement("a");
+    a.href = "/exports/insight-" + id + ".pdf";
+    a.download = "insight.pdf";
+    a.click();
+  }
 
   return (
     <div className="px-6 lg:px-10 py-6 space-y-6">
