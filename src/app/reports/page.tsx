@@ -19,6 +19,7 @@ export default function ReportsPage() {
   const addBlock = useReportStore((s) => s.addBlock);
   const removeBlock = useReportStore((s) => s.removeBlock);
   const { user } = useAuth();
+  const db = dbFactory();
   const [saved, setSaved] = useState<{ id:string; title:string; date:string }[]>([]);
   const hasBlocks = blocks.length > 0;
 
