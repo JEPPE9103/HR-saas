@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Bot, Upload, FileDown } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Upload, FileDown } from "lucide-react";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   BarChart, Bar,
@@ -62,7 +62,6 @@ const insights = [
 ];
 
 export default function DashboardPage() {
-  const [copilotOpen, setCopilotOpen] = useState(false);
 
   return (
     <div className="px-6 lg:px-10 py-6 space-y-6">
@@ -77,9 +76,6 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2">
           <button className="inline-flex items-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-teal-700 hover:bg-teal-100 dark:border-teal-700 dark:bg-teal-900/30 dark:text-teal-200 dark:hover:bg-teal-900/50">
             <Upload className="h-4 w-4" /> Upload data
-          </button>
-          <button onClick={()=>setCopilotOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-2 text-white hover:bg-indigo-700">
-            <Bot className="h-4 w-4" /> Open Copilot
           </button>
         </div>
       </div>
@@ -130,9 +126,6 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2">
               <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50">
                 <FileDown className="h-4 w-4" /> Export brief
-              </button>
-              <button onClick={()=>setCopilotOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-1.5 text-white hover:bg-indigo-700">
-                <Bot className="h-4 w-4" /> Ask Copilot
               </button>
             </div>
           </div>
