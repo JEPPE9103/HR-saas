@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
 export function SimulationDrawer() {
-  const { open, setOpen, defaults, setResultText, resultText } = useSimulationDrawer();
+  const { open, setOpen, defaults, setResultText, setResult, setResultOpen } = useSimulationDrawer();
   const sp = useSearchParams();
   const datasetId = sp.get("datasetId") || "demo-se";
   const [role, setRole] = useState(defaults?.role ?? "Engineer");
   const [percent, setPercent] = useState(defaults?.percent ?? 5);
-  const [result, setResult] = useState<any>(null);
+  // local result state replaced by global resultText/result
 
   async function run() {
     const res = await fetch("/api/copilot/ask", {
@@ -21,8 +21,13 @@ export function SimulationDrawer() {
       body: JSON.stringify({ sessionId: "local", datasetId, message: `/simulate role:"${role}" +${percent}%` }),
     });
     const data = await res.json();
-    setResult(data);
     setResultText(data?.text as string | undefined);
+    const m = /new gap\s(\d+\.\d+)/.exec(data?.text || "");
+    const gapPercent = m ? Number(m[1]) : 0;
+    const impacted = /Impacted\s(\d+)/i.exec(data?.text || "")?.[1];
+    const budget = /\+(\d+)\sSEK/i.exec(data?.text || "")?.[1];
+    setResult({ gapPercent, impacted: impacted ? Number(impacted) : 0, budgetAnnual: budget ? Number(budget) : 0 });
+    setResultOpen(true);
   }
 
   if (!open) return null;
@@ -41,9 +46,7 @@ export function SimulationDrawer() {
           <Input type="number" value={percent} onChange={(e) => setPercent(Number(e.target.value))} />
           <Button onClick={run}>Run</Button>
         </div>
-        {result && (
-          <div className="text-sm subtle">{result.text}</div>
-        )}
+        {/* Result text rendered in sticky bar / result panel */}
       </div>
     </div>
   );

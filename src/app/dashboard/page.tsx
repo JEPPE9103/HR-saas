@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Upload, FileDown } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Upload, FileDown, RotateCcw } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   BarChart, Bar,
@@ -10,6 +11,7 @@ import RiskPanel from "@/components/dashboard/RiskPanel";
 import ActionQueue from "@/components/dashboard/ActionQueue";
 import { SimulationDrawer } from "@/components/SimulationDrawer";
 import SimulationStickyBar from "@/components/SimulationStickyBar";
+import SimulationResultPanel from "@/components/SimulationResultPanel";
 
 const kpis = [
   { label: "Gender pay gap", value: 5.6, delta: -0.8, suffix: "%" },
@@ -62,6 +64,10 @@ const insights = [
 ];
 
 export default function DashboardPage() {
+  const sp = useSearchParams();
+  const router = useRouter();
+  const datasetId = sp.get("datasetId") || "demo-se";
+  const [computedAt, setComputedAt] = useState<string>("23 Aug 2026");
 
   return (
     <div className="px-6 lg:px-10 py-6 space-y-6">
@@ -69,11 +75,16 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Dashboard</h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            Last computed: 23 Aug 2026 • <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:ring-emerald-800">EU directive ready</span>
-          </p>
+          <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+            <span>Last computed: {computedAt}</span>
+            <button aria-label="Recompute dataset" onClick={async()=>{ const r = await fetch('/api/analyze',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ datasetId })}); const j = await r.json(); if(j?.computedAt){ setComputedAt(new Date(j.computedAt).toLocaleDateString()); } }} className="inline-flex items-center gap-1 rounded-lg border px-2 py-1 hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50"><RotateCcw className="h-3 w-3"/> Recompute</button>
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:ring-emerald-800">EU directive ready</span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
+          <select aria-label="Select dataset" value={datasetId} onChange={(e)=>{ const v=e.target.value; router.push(`/dashboard?datasetId=${encodeURIComponent(v)}`); }} className="rounded-lg border border-white/10 bg-slate-900/50 px-3 py-2 text-slate-100">
+            {['demo-se','demo-de','demo-uk'].map(ds => (<option key={ds} value={ds}>{ds}</option>))}
+          </select>
           <button className="inline-flex items-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-teal-700 hover:bg-teal-100 dark:border-teal-700 dark:bg-teal-900/30 dark:text-teal-200 dark:hover:bg-teal-900/50">
             <Upload className="h-4 w-4" /> Upload data
           </button>
@@ -150,6 +161,7 @@ export default function DashboardPage() {
       {/* Right-side Simulation Drawer */}
       <SimulationDrawer />
       <SimulationStickyBar />
+      <SimulationResultPanel />
     </div>
   );
 }
