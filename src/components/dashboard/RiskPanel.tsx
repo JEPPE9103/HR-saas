@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ResponsiveContainer, CartesianGrid, XAxis, BarChart, Bar, Tooltip, ReferenceLine } from "recharts";
+import { ResponsiveContainer, CartesianGrid, XAxis, YAxis, BarChart, Bar, Tooltip, ReferenceLine, Cell } from "recharts";
 import { useSimulationDrawer } from "@/store/ui";
 
 type Item = { site: string; role: string; gapPercent: number; n: number };
@@ -43,20 +43,24 @@ export default function RiskPanel({ items }: { items?: Item[] }){
       </div>
 
       {mode==='list' && (
-        <ul className="space-y-3">
-          {top.map((t,i)=> (
-            <li key={`${t.site}-${t.role}`} className="flex items-center justify-between rounded-lg border p-3 dark:border-slate-700">
-              <div>
-                <div className="font-medium text-slate-900 dark:text-slate-100">{t.site} • {t.role}</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">Gap {t.gapPercent}% • N={t.n}</div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs" style={{ background: colorForGap(t.gapPercent), color: '#0b1220' }}>{t.gapPercent}%</span>
-                <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50" onClick={()=>{ setDefaults({ role: t.role, percent: 5 }); setOpen(true);}}>Simulate</button>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="h-72">
+          <div className="h-full overflow-auto">
+            <ul className="space-y-3">
+              {top.map((t,i)=> (
+                <li key={`${t.site}-${t.role}`} className="flex items-center justify-between rounded-lg border p-3 dark:border-slate-700">
+                  <div>
+                    <div className="font-medium text-slate-900 dark:text-slate-100">{t.site} • {t.role}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">Gap {t.gapPercent}% • N={t.n}</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs" style={{ background: colorForGap(t.gapPercent), color: '#0b1220' }}>{t.gapPercent}%</span>
+                    <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50" onClick={()=>{ setDefaults({ role: t.role, percent: 5 }); setOpen(true);}}>Simulate</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       )}
 
       {mode==='bars' && (() => {
@@ -67,11 +71,12 @@ export default function RiskPanel({ items }: { items?: Item[] }){
               <BarChart data={rows} layout="vertical" margin={{ top: 10, right: 12, bottom: 10, left: 12 }}>
                 <CartesianGrid horizontal={false} strokeDasharray="3 3" />
                 <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 10 }} />
+                <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 11, fill: '#94a3b8' }} />
                 <ReferenceLine x={2} stroke="#22c55e" strokeDasharray="3 3" label={{ value: "2% goal", fill: "#22c55e", position: "insideTopRight", fontSize: 12 }} />
                 <Tooltip formatter={(v:any, _n, p:any)=> [`${v}% (N=${p.payload.n})`, p.payload.name]} />
                 <Bar dataKey="gap" radius={6} onClick={(_, i)=>{ const r = rows[i]; setDefaults({ role: r.role, percent: 5 }); setOpen(true); }}>
                   {rows.map((r, i) => (
-                    <rect key={i} />
+                    <Cell key={`cell-${i}`} fill={colorForGap(r.gap)} />
                   ))}
                 </Bar>
               </BarChart>
