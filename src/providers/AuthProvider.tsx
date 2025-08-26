@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
+import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import { auth, db, googleProvider, microsoftProvider } from "@/lib/firebase";
+import { auth, firebaseDb as dbFactory } from "@/lib/firebase/client";
 import type { UserDoc } from "@/lib/models";
 
 type Ctx = {
@@ -23,12 +23,13 @@ const AuthCtx = createContext<Ctx>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }){
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const db = dbFactory();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
-      setUser(u);
+      setUser(u ?? null);
       if (u) {
         const ref = doc(db, "users", u.uid);
         const snap = await getDoc(ref);
@@ -53,13 +54,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   }, []);
 
   const value = useMemo<Ctx>(() => ({
-    user,
+    user: user ?? null,
     loading,
-    signInGoogle: async () => { await signInWithPopup(auth, googleProvider); },
-    signInMicrosoft: async () => { await signInWithPopup(auth, microsoftProvider); },
+    signInGoogle: async () => {},
+    signInMicrosoft: async () => {},
     signOut: async () => { await signOut(auth); },
   }), [user, loading]);
 
+  if (user === undefined) return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
   return (<AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>);
 }
 
