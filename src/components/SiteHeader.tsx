@@ -3,6 +3,7 @@
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import { CheckCircle2 } from "lucide-react";
+import { UserMenu } from "@/components/UserMenu";
 
 export function SiteHeader() {
   return (
@@ -22,7 +23,11 @@ export function SiteHeader() {
           <Link href="/" className="hover:underline">Home</Link>
           <Link href="/import" className="hover:underline">Import</Link>
           <Link href="/dashboard" className="hover:underline">Dashboard</Link>
+          <Link href="/insights" className="hover:underline">Insights</Link>
+          <Link href="/simulate" className="hover:underline">Simulate</Link>
+          <Link href="/reports" className="hover:underline">Reports</Link>
           <ThemeToggle />
+          <UserMenu />
         </nav>
       </div>
     </header>
