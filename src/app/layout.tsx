@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { Suspense } from "react";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
@@ -66,8 +67,12 @@ export default function RootLayout({
               © {new Date().getFullYear()} PayTransparency — EU Pay Transparency Directive ready.
             </div>
           </footer>
-          <CopilotPanel datasetId="demo-se" />
-          <SimulationDrawer />
+          <Suspense fallback={null}>
+            <CopilotPanel datasetId="demo-se" />
+          </Suspense>
+          <Suspense fallback={null}>
+            <SimulationDrawer />
+          </Suspense>
           </AuthProvider>
         </ThemeProvider>
       </body>
