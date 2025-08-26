@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useSimulationDrawer } from "@/store/ui";
 import { exportPdf, exportCsv } from "@/services/mockApi";
