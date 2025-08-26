@@ -6,7 +6,7 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   BarChart, Bar,
 } from "recharts";
-import RiskHeatmap from "@/components/dashboard/RiskHeatmap";
+import RiskPanel from "@/components/dashboard/RiskPanel";
 import ActionQueue from "@/components/dashboard/ActionQueue";
 import { SimulationDrawer } from "@/components/SimulationDrawer";
 import SimulationStickyBar from "@/components/SimulationStickyBar";
@@ -118,7 +118,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="col-span-12 xl:col-span-5">
-          <RiskHeatmap />
+          <RiskPanel />
         </div>
       </div>
 
