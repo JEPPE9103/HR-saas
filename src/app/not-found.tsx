@@ -1,13 +1,13 @@
 import Link from "next/link";
 
+export const dynamic = "force-static";
+
 export default function NotFound(){
   return (
-    <div className="mx-auto max-w-lg py-16 text-center">
-      <h1 className="text-2xl font-semibold">Page not found</h1>
-      <p className="mt-2 text-slate-500">The page you are looking for does not exist.</p>
-      <div className="mt-4">
-        <Link href="/dashboard" className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">Back to dashboard</Link>
-      </div>
+    <div className="mx-auto max-w-xl px-6 py-24 text-center">
+      <h1 className="text-3xl font-semibold mb-2">Page not found</h1>
+      <p className="text-muted-foreground mb-6">We couldn’t find that view. Try going back to your dashboard.</p>
+      <Link className="inline-flex items-center rounded-md border px-3 py-2" href="/dashboard">Go to Dashboard</Link>
     </div>
   );
 }
