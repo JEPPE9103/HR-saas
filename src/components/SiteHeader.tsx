@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 import { CheckCircle2 } from "lucide-react";
 
 export function SiteHeader() {
