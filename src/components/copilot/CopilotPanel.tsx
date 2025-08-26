@@ -41,7 +41,7 @@ export function CopilotPanel({ datasetId }: { datasetId: string }) {
 
   function Quick({ label, value }: { label: string; value: string }) {
     return (
-      <Button size="sm" variant="ghost" onClick={() => setInput(value)} className="h-8">
+      <Button variant="ghost" onClick={() => setInput(value)} className="h-8">
         {label}
       </Button>
     );
