@@ -4,8 +4,6 @@ import "./globals.css";
 import { Suspense } from "react";
 import ClientShell from "./ClientShell";
 import { SafeThemeScript } from "@/components/SafeThemeScript";
-import { CopilotPanel } from "@/components/copilot/CopilotPanel";
-import { SimulationDrawer } from "@/components/SimulationDrawer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
