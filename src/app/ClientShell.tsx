@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { CopilotPanel } from "@/components/copilot/CopilotPanel";
 import { SimulationDrawer } from "@/components/SimulationDrawer";
-import SiteHeader from "@/components/SiteHeader";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export default function ClientShell({ children }: { children: ReactNode }) {
   return (
