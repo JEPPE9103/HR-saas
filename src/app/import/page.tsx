@@ -11,7 +11,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { DataQualityCard } from "@/components/DataQualityCard";
 import { Protected } from "@/components/Protected";
-import { db } from "@/lib/firebase";
+import { firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { addDoc, doc, getDoc } from "firebase/firestore";
 import { datasetsRef } from "@/lib/models";
 import { useAuth } from "@/providers/AuthProvider";
@@ -20,6 +20,7 @@ import UploadWizard, { Mapping } from "@/components/upload/UploadWizard";
 
 export default function ImportPage() {
   const { user } = useAuth();
+  const db = dbFactory();
   const router = useRouter();
   const setEmployees = useDataStore((s) => s.setEmployees);
   const save = useDataStore((s) => s.saveToLocalStorage);

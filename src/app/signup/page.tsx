@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/providers/AuthProvider";
-import { auth, db } from "@/lib/firebase";
+import { getAuthClient, firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { doc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
 
 export default function SignupPage() {
-  const { signInGoogle, signInMicrosoft } = useAuth();
   const router = useRouter();
+  const auth = getAuthClient();
+  const db = dbFactory();
   async function routePostLogin(){
     const u = auth.currentUser;
     if (!u) {
@@ -27,8 +27,7 @@ export default function SignupPage() {
     <main className="container py-20 md:py-24">
       <section className="card p-10 max-w-md mx-auto space-y-6">
         <h1 className="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white">Create account</h1>
-        <button className="btn btn-ghost" aria-label="Sign up with Google" onClick={async()=>{ await signInGoogle(); await routePostLogin(); }}>Continue with Google</button>
-        <button className="btn btn-ghost" aria-label="Sign up with Microsoft" onClick={async()=>{ await signInMicrosoft(); await routePostLogin(); }}>Continue with Microsoft</button>
+        <a className="btn btn-ghost" aria-label="Sign up with Google" href="/login">Continue with Google</a>
       </section>
     </main>
   );

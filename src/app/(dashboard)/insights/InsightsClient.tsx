@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import InsightCard, { Insight } from "@/components/insights/InsightCard";
 import SeverityBadge from "@/components/insights/SeverityBadge";
 import { Bot, FileDown, Filter } from "lucide-react";
-import { db } from "@/lib/firebase";
+import { firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { getDocs, query, where } from "firebase/firestore";
 import { insightsRef, metricsRef } from "@/lib/models";
 
@@ -29,6 +29,7 @@ const TABLE: Row[] = [
 ];
 
 export default function InsightsClient(){
+  const db = dbFactory();
   const [severity, setSeverity] = useState<"All"|"High"|"Medium"|"Low">("All");
   const [queryText, setQueryText] = useState("");
   const [feedData, setFeedData] = useState<Insight[]>(SAMPLE);

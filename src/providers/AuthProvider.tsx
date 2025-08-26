@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import { auth, firebaseDb as dbFactory } from "@/lib/firebase/client";
+import { getAuthClient, firebaseDb as dbFactory } from "@/lib/firebase/client";
 import type { UserDoc } from "@/lib/models";
 
 type Ctx = {
@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const db = dbFactory();
+  const auth = getAuthClient();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {

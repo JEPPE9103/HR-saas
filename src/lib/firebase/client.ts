@@ -33,20 +33,29 @@ export function getFirebaseApp(): FirebaseApp {
 export const firebaseAuth = () => getAuth(getFirebaseApp());
 export const firebaseDb = () => getFirestore(getFirebaseApp());
 export const firebaseStorage = () => getStorage(getFirebaseApp());
-
-export const auth = firebaseAuth();
-(async () => {
-  try {
-    await setPersistence(auth, indexedDBLocalPersistence);
-  } catch {
-    try {
-      await setPersistence(auth, browserLocalPersistence);
-    } catch {
-      await setPersistence(auth, inMemoryPersistence);
-    }
+let authSingleton: ReturnType<typeof getAuth> | undefined;
+let persistenceSet = false;
+export function getAuthClient(){
+  if (!authSingleton) {
+    authSingleton = firebaseAuth();
   }
-})();
-auth.useDeviceLanguage();
+  if (!persistenceSet && typeof window !== "undefined") {
+    persistenceSet = true;
+    (async () => {
+      try {
+        await setPersistence(authSingleton!, indexedDBLocalPersistence);
+      } catch {
+        try {
+          await setPersistence(authSingleton!, browserLocalPersistence);
+        } catch {
+          await setPersistence(authSingleton!, inMemoryPersistence);
+        }
+      }
+      authSingleton!.useDeviceLanguage();
+    })();
+  }
+  return authSingleton!;
+}
 
 export const googleProvider = new GoogleAuthProvider();
 export const microsoftProvider = new OAuthProvider("microsoft.com");

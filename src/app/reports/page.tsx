@@ -7,7 +7,7 @@ import { useReportStore } from "@/store/report";
 import { exportPdf, exportCsv } from "@/services/mockApi";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileDown, PlusCircle } from "lucide-react";
-import { db } from "@/lib/firebase";
+import { firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { reportsRef } from "@/lib/models";
 import { addDoc, deleteDoc, doc, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useAuth } from "@/providers/AuthProvider";

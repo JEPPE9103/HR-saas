@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { auth, googleProvider, firebaseDb as dbFactory } from "@/lib/firebase/client";
+import { getAuthClient, googleProvider, firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { signInWithPopup, signInWithRedirect, getRedirectResult, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
 
@@ -15,7 +15,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"signin"|"signup">("signin");
 
-  useEffect(() => { getRedirectResult(auth).catch(()=>{}); }, []);
+  const auth = getAuthClient();
+  useEffect(() => { getRedirectResult(auth).catch(()=>{}); }, [auth]);
   async function routePostLogin(){
     // Wait until Firebase sets currentUser
     const u = auth.currentUser;

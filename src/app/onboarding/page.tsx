@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import { db } from "@/lib/firebase";
+import { firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { companiesRef, datasetsRef } from "@/lib/models";
 import { addDoc, doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 
 export default function OnboardingPage(){
+  const db = dbFactory();
   const { user, loading } = useAuth();
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
