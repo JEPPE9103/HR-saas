@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
 export function SimulationDrawer() {
-  const { open, setOpen, defaults } = useSimulationDrawer();
+  const { open, setOpen, defaults, setResultText, resultText } = useSimulationDrawer();
   const [role, setRole] = useState(defaults?.role ?? "Engineer");
   const [percent, setPercent] = useState(defaults?.percent ?? 5);
   const [result, setResult] = useState<any>(null);
@@ -19,6 +19,7 @@ export function SimulationDrawer() {
     });
     const data = await res.json();
     setResult(data);
+    setResultText(data?.text as string | undefined);
   }
 
   if (!open) return null;

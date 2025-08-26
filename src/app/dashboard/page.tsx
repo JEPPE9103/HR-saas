@@ -6,7 +6,10 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   BarChart, Bar,
 } from "recharts";
-import AISphere from "@/components/hero/AISphere";
+import RiskHeatmap from "@/components/dashboard/RiskHeatmap";
+import ActionQueue from "@/components/dashboard/ActionQueue";
+import { SimulationDrawer } from "@/components/SimulationDrawer";
+import SimulationStickyBar from "@/components/SimulationStickyBar";
 
 const kpis = [
   { label: "Gender pay gap", value: 5.6, delta: -0.8, suffix: "%" },
@@ -97,9 +100,9 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Charts row + AI Sphere */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <div className="xl:col-span-2 rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      {/* Row 2: Trend + Heatmap */}
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-12 xl:col-span-7 rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <div className="mb-2 text-sm text-slate-600 dark:text-slate-400">Gender Pay Gap Trend</div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -114,36 +117,14 @@ export default function DashboardPage() {
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 shadow-lg p-3">
-          <AISphere />
-          <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400 px-1">
-            <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#2563EB]"/> Blue: Gaps</span>
-              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#F59E0B]"/> Yellow: Outliers</span>
-              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#10B981]"/> Green: Compliance</span>
-            </div>
-            <div className="rounded bg-white/10 px-2 py-0.5">Copilot analyzing your dataset…</div>
-          </div>
+        <div className="col-span-12 xl:col-span-5">
+          <RiskHeatmap />
         </div>
       </div>
 
-      {/* Sites + Insights */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <div className="rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <div className="mb-3 text-sm text-slate-600 dark:text-slate-400">Risk sites</div>
-          <ul className="space-y-3">
-            {sites.map(s => (
-              <li key={s.site} className="flex items-center justify-between gap-3">
-                <div className="font-medium text-slate-900 dark:text-slate-100">{s.site}</div>
-                <div className={`text-xs rounded-full px-2 py-0.5 ring-1 ${s.severity==="High" ? "bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800" : s.severity==="Medium" ? "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:ring-amber-800":"bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800"}`}>
-                  {s.severity}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="xl:col-span-2 rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+      {/* Row 3: Insights + Action Queue */}
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-12 xl:col-span-7 rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <div className="mb-3 flex items-center justify-between">
             <div className="text-sm text-slate-600 dark:text-slate-400">Insights</div>
             <div className="flex items-center gap-2">
@@ -168,35 +149,14 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
+        <div className="col-span-12 xl:col-span-5">
+          <ActionQueue />
+        </div>
       </div>
 
-      {/* Copilot Drawer */}
-      {copilotOpen && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/30" onClick={()=>setCopilotOpen(false)} />
-          <aside className="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-slate-900 shadow-xl p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Copilot</h2>
-              <button onClick={()=>setCopilotOpen(false)} className="text-sm text-slate-600 dark:text-slate-400">Close</button>
-            </div>
-            <div className="mt-3 space-x-2">
-              <button className="mb-2 rounded-full border px-2 py-1 text-sm dark:border-slate-700">/top-gaps</button>
-              <button className="mb-2 rounded-full border px-2 py-1 text-sm dark:border-slate-700">/simulate +5% engineers</button>
-              <button className="mb-2 rounded-full border px-2 py-1 text-sm dark:border-slate-700">/export brief</button>
-            </div>
-            <div className="mt-4 h-[60vh] overflow-auto space-y-3">
-              <div className="rounded-lg bg-indigo-50 p-3 text-indigo-900 text-sm dark:bg-indigo-900/30 dark:text-indigo-200">
-                Engineering gap is 8.2%. Simulate a +5% raise for IC2–IC4? Est. budget +€240k, new gap 2.1%.
-              </div>
-              <div className="rounded-lg bg-gray-50 p-3 text-sm dark:bg-slate-800 dark:text-slate-200">Yes, simulate +5% for engineers in SE.</div>
-            </div>
-            <div className="mt-3 flex gap-2">
-              <input className="flex-1 rounded-md border px-3 py-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200" placeholder="Ask a question…" />
-              <button className="rounded-md bg-indigo-600 px-3 py-2 text-white">Send</button>
-            </div>
-          </aside>
-        </div>
-      )}
+      {/* Right-side Simulation Drawer */}
+      <SimulationDrawer />
+      <SimulationStickyBar />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Area, AreaChart } from "recharts";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import { useMemo } from "react";
 
 export default function HeroChart(){
@@ -22,7 +22,7 @@ export default function HeroChart(){
   ), []);
 
   return (
-    <div className="relative h-72 w-full overflow-hidden rounded-2xl ring-1 ring-white/10 md:h-96 p-3">
+    <div className="relative h-72 w-full overflow-hidden rounded-2xl ring-1 ring-white/10 md:h-96 p-3 md:min-w-[520px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <CartesianGrid vertical={false} stroke="#334155" strokeOpacity={0.3} />
@@ -30,6 +30,7 @@ export default function HeroChart(){
           <YAxis tick={{ fill: "#94a3b8", fontSize: 12 }} />
           <Tooltip />
           <Line type="monotone" dataKey="gap" stroke="#2563EB" strokeWidth={3} dot={false} isAnimationActive />
+          <ReferenceLine y={2} stroke="#22c55e" strokeDasharray="3 3" label={{ value: "2% goal", fill: "#22c55e", position: "insideTopRight", fontSize: 12 }} />
         </LineChart>
       </ResponsiveContainer>
       <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-slate-300">Gender Pay Gap Trend</div>

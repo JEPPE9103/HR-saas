@@ -26,22 +26,13 @@ export default function HomePage(){
         </FeatureCard>
       </section>
 
-      {/* HOW IT WORKS */}
+      {/* HOW IT WORKS (compressed) */}
       <section className="mt-10 rounded-xl border border-white/10 bg-white/5 p-5">
         <h2 className="text-lg font-semibold text-white">How it works</h2>
         <ol className="mt-4 grid gap-4 sm:grid-cols-3 text-sm">
-          <li className="rounded-lg border border-white/10 bg-slate-900/40 p-4">
-            <div className="font-medium text-slate-200">1) Upload CSV</div>
-            <p className="mt-1 text-slate-400">Drag & drop. Map gender, role, dept, base pay.</p>
-          </li>
-          <li className="rounded-lg border border-white/10 bg-slate-900/40 p-4">
-            <div className="font-medium text-slate-200">2) Generate insights</div>
-            <p className="mt-1 text-slate-400">Top gaps, outliers, compliance risks in seconds.</p>
-          </li>
-          <li className="rounded-lg border border-white/10 bg-slate-900/40 p-4">
-            <div className="font-medium text-slate-200">3) Simulate & report</div>
-            <p className="mt-1 text-slate-400">Run what‑ifs. Export executive PDF & anonymized CSV.</p>
-          </li>
+          <li className="rounded-lg border border-white/10 bg-slate-900/40 p-4">1) Upload CSV → map gender, role, dept, pay.</li>
+          <li className="rounded-lg border border-white/10 bg-slate-900/40 p-4">2) Get insights → gaps, outliers, compliance risks.</li>
+          <li className="rounded-lg border border-white/10 bg-slate-900/40 p-4">3) Simulate & export → executive PDF + anonymized CSV.</li>
         </ol>
         <div className="mt-5 flex gap-3">
           <a href="/dashboard?datasetId=demo-se" className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">Start with sample data</a>

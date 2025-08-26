@@ -7,6 +7,8 @@ type SimulationDrawerState = {
   setOpen: (v: boolean) => void;
   defaults?: { role?: string; percent?: number };
   setDefaults: (d?: { role?: string; percent?: number }) => void;
+  resultText?: string;
+  setResultText: (t?: string) => void;
 };
 
 export const useSimulationDrawer = create<SimulationDrawerState>((set) => ({
@@ -14,6 +16,8 @@ export const useSimulationDrawer = create<SimulationDrawerState>((set) => ({
   setOpen: (v) => set({ open: v }),
   defaults: undefined,
   setDefaults: (d) => set({ defaults: d }),
+  resultText: undefined,
+  setResultText: (t) => set({ resultText: t }),
 }));
 
 
