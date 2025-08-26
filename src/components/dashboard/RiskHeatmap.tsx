@@ -40,40 +40,66 @@ export default function RiskHeatmap({
     return { byKey };
   }, [data, sites, roles]);
 
-  const cellSize = 20;
-  const padding = 24;
-  const width = padding * 2 + roles.length * cellSize;
-  const height = padding * 2 + sites.length * cellSize + 18; // bottom labels
+  // Layout metrics
+  const cellSize = 28;
+  const leftLabelW = 90;   // space for site labels
+  const topLabelH = 48;    // space for rotated role labels
+  const rightPad = 16;
+  const bottomPad = 24;
+  const originX = leftLabelW;
+  const originY = topLabelH;
+  const width = leftLabelW + roles.length * cellSize + rightPad;
+  const height = topLabelH + sites.length * cellSize + bottomPad;
 
   return (
     <div className="rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="mb-2 text-sm text-slate-600 dark:text-slate-400">Risk Heatmap</div>
-      <svg width="100%" viewBox={`0 0 ${width} ${height}`} className="max-w-full">
-        {roles.map((r, i) => (
-          <text key={r} x={padding + i * cellSize + cellSize / 2} y={14} textAnchor="middle" className="fill-slate-500 dark:fill-slate-400 text-[10px]">{r}</text>
-        ))}
-        {sites.map((s, j) => (
-          <text key={s} x={4} y={padding + j * cellSize + cellSize / 2 + 3} className="fill-slate-500 dark:fill-slate-400 text-[10px]">{s}</text>
-        ))}
-        {sites.map((s, j) => (
-          roles.map((r, i) => {
-            const c = cells.byKey.get(`${s}__${r}`) ?? { site: s, role: r, gapPercent: 0, n: 0 };
-            const x = padding + i * cellSize;
-            const y = padding + j * cellSize;
-            return (
-              <g key={`${s}-${r}`}>
-                <rect x={x} y={y} width={cellSize - 2} height={cellSize - 2} rx={3} ry={3}
-                  fill={colorForGap(c.gapPercent)} className="cursor-pointer" onClick={() => {
-                    setDefaults({ role: r, percent: 5 });
-                    setOpen(true);
-                  }}>
-                </rect>
-                <title>{`${s} • ${r}: ${c.gapPercent}% (N=${c.n})`}</title>
-              </g>
-            );
-          })
-        ))}
-      </svg>
+      <div className="overflow-x-auto">
+        <svg width={width} height={height} className="block">
+          {/* Column labels (rotated) */}
+          {roles.map((r, i) => (
+            <text key={r}
+              x={originX + i * cellSize + cellSize / 2}
+              y={originY - 6}
+              transform={`rotate(-45 ${originX + i * cellSize + cellSize / 2} ${originY - 6})`}
+              textAnchor="end"
+              className="fill-slate-500 dark:fill-slate-400 text-[10px]">
+              {r}
+            </text>
+          ))}
+          {/* Row labels */}
+          {sites.map((s, j) => (
+            <text key={s}
+              x={originX - 6}
+              y={originY + j * cellSize + cellSize / 2 + 3}
+              textAnchor="end"
+              className="fill-slate-500 dark:fill-slate-400 text-[10px]">
+              {s}
+            </text>
+          ))}
+          {/* Grid cells */}
+          {sites.map((s, j) => (
+            roles.map((r, i) => {
+              const c = cells.byKey.get(`${s}__${r}`) ?? { site: s, role: r, gapPercent: 0, n: 0 };
+              const x = originX + i * cellSize;
+              const y = originY + j * cellSize;
+              return (
+                <g key={`${s}-${r}`}>
+                  <rect x={x} y={y} width={cellSize - 3} height={cellSize - 3} rx={4} ry={4}
+                    fill={colorForGap(c.gapPercent)} className="cursor-pointer" onClick={() => {
+                      setDefaults({ role: r, percent: 5 });
+                      setOpen(true);
+                    }}>
+                  </rect>
+                  <title>{`${s} • ${r}: ${c.gapPercent}% (N=${c.n})`}</title>
+                </g>
+              );
+            })
+          ))}
+          {/* Outer border */}
+          <rect x={originX - 1} y={originY - 1} width={roles.length * cellSize + 2} height={sites.length * cellSize + 2} fill="none" stroke="rgba(148,163,184,0.3)" />
+        </svg>
+      </div>
       <div className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">Click a cell to open simulation.</div>
     </div>
   );
