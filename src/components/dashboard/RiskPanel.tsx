@@ -59,23 +59,36 @@ export default function RiskPanel({ items }: { items?: Item[] }){
         </ul>
       )}
 
-      {mode==='matrix' && (
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <ScatterChart margin={{ top: 10, right: 10, bottom: 20, left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis type="category" dataKey="role" allowDecimals={false} tick={{ fontSize: 10 }} />
-              <YAxis type="category" dataKey="site" tick={{ fontSize: 10 }} />
-              <ZAxis type="number" dataKey="gapPercent" range={[40, 160]} />
-              <Tooltip cursor={{ strokeDasharray: '3 3' }} formatter={(v, name, p: any) => [`${p.payload.gapPercent}% (N=${p.payload.n})`, `${p.payload.site} • ${p.payload.role}`]} />
-              <Scatter data={data} shape={(props:any)=>{
-                const fill = colorForGap(props.payload.gapPercent);
-                return <circle cx={props.cx} cy={props.cy} r={props.size/10} fill={fill} onClick={()=>{ setDefaults({ role: props.payload.role, percent: 5 }); setOpen(true); }} />;
-              }} />
-            </ScatterChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      {mode==='matrix' && (() => {
+        const points = data.map(d => ({
+          x: roles.indexOf(d.role),
+          y: sites.indexOf(d.site),
+          role: d.role,
+          site: d.site,
+          gapPercent: d.gapPercent,
+          n: d.n,
+        })).filter(p => p.x >= 0 && p.y >= 0);
+        const xDomain: [number, number] = [-0.5, roles.length - 0.5];
+        const yDomain: [number, number] = [-0.5, sites.length - 0.5];
+        return (
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <ScatterChart margin={{ top: 10, right: 10, bottom: 24, left: 24 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" dataKey="x" domain={xDomain} tick={{ fontSize: 10 }} tickFormatter={(v)=> roles[Math.max(0, Math.min(roles.length-1, Math.round(v)))]} interval={0} />
+                <YAxis type="number" dataKey="y" domain={yDomain} tick={{ fontSize: 10 }} tickFormatter={(v)=> sites[Math.max(0, Math.min(sites.length-1, Math.round(v)))]} interval={0} />
+                <ZAxis type="number" dataKey="gapPercent" range={[60, 160]} />
+                <Tooltip cursor={{ strokeDasharray: '3 3' }} formatter={(v, _name, p: any) => [`${p.payload.gapPercent}% (N=${p.payload.n})`, `${p.payload.site} • ${p.payload.role}`]} />
+                <Scatter data={points} shape={(props:any)=>{
+                  const fill = colorForGap(props.payload.gapPercent);
+                  const r = Math.max(6, Math.min(14, 6 + props.payload.gapPercent));
+                  return <circle cx={props.cx} cy={props.cy} r={r} fill={fill} onClick={()=>{ setDefaults({ role: props.payload.role, percent: 5 }); setOpen(true); }} />;
+                }} />
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      })()}
     </div>
   );
 }
