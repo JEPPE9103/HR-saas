@@ -34,7 +34,7 @@ const gapTrend = [
 
 const insights = [
   { title: "Engineering gap 8.2% (High)", body: "Recommend +5% adj for IC2–IC4. Est. budget +€240k, new gap 2.1%." },
-  { title: "Berlin site has 2 outliers >40% above median", body: "Review comp policy exceptions; cap at P90 for IC levels." },
+  { title: "H&M har 2 outliers >40% över median", body: "Se över undantag; tak vid P90 för IC-nivåer." },
   { title: "Female % in leadership trending down", body: "Set target P50 by Q4; simulate promotion uplift for top performers." },
 ];
 
