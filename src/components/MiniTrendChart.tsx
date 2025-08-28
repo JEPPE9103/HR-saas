@@ -17,8 +17,8 @@ export function MiniTrendChart(){
   const delta = last - prev;
   const deltaText = `${delta >= 0 ? "+" : ""}${delta.toFixed(1)}pp`;
   const badgeClass = delta < 0
-    ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
-    : "bg-rose-50 text-rose-700 ring-rose-200";
+    ? "bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]"
+    : "bg-[var(--danger-soft-bg)] text-[var(--danger-soft-fg)] ring-[var(--danger-soft-ring)]";
 
   return (
     <div className="relative h-28 w-full rounded-xl bg-transparent">

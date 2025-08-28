@@ -45,7 +45,7 @@ export default function SimulationResultPanel(){
           </div>
           <div className="rounded-lg border p-3">
             <div className="text-xs subtle">Compliance guardrail</div>
-            <div className="mt-1 inline-flex items-center gap-2 rounded-full px-2 py-0.5 text-xs ring-1 bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800">N≥10 enforced</div>
+            <div className="mt-1 inline-flex items-center gap-2 rounded-full px-2 py-0.5 text-xs ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">N≥10 enforced</div>
           </div>
           <div className="rounded-lg border p-3">
             <div className="text-xs subtle mb-2">Distribution (demo)</div>

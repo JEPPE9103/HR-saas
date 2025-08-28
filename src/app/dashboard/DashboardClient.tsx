@@ -9,6 +9,7 @@ import ActionQueue from "@/components/dashboard/ActionQueue";
 import { SimulationDrawer } from "@/components/SimulationDrawer";
 import SimulationStickyBar from "@/components/SimulationStickyBar";
 import SimulationResultPanel from "@/components/SimulationResultPanel";
+import { useI18n } from "@/providers/I18nProvider";
 
 const kpis = [
   { label: "Gender pay gap", value: 5.6, delta: -0.8, suffix: "%" },
@@ -39,6 +40,7 @@ const insights = [
 ];
 
 export default function DashboardClient(){
+  const { t } = useI18n();
   const sp = useSearchParams();
   const router = useRouter();
   const datasetId = sp.get("datasetId") || "demo-se";
@@ -48,30 +50,32 @@ export default function DashboardClient(){
     <div className="px-6 lg:px-10 py-6 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Dashboard</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--text)]">{t("dashboard.title")}</h1>
           <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-            <span>Last computed: {computedAt}</span>
-            <button aria-label="Recompute dataset" onClick={async()=>{ const r = await fetch('/api/analyze',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ datasetId })}); const j = await r.json(); if(j?.computedAt){ setComputedAt(new Date(j.computedAt).toLocaleDateString()); } }} className="inline-flex items-center gap-1 rounded-lg border px-2 py-1 hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50"><RotateCcw className="h-3 w-3"/> Recompute</button>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:ring-emerald-800">EU directive ready</span>
+            <span>{t("dashboard.lastComputed")} {computedAt}</span>
+            <button aria-label="Recompute dataset" onClick={async()=>{ const r = await fetch('/api/analyze',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ datasetId })}); const j = await r.json(); if(j?.computedAt){ setComputedAt(new Date(j.computedAt).toLocaleDateString()); } }} className="inline-flex items-center gap-1 rounded-lg border px-2 py-1 hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50"><RotateCcw className="h-3 w-3"/> {t("common.recompute")}</button>
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">{t("dashboard.euReady")}</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <select aria-label="Select dataset" value={datasetId} onChange={(e)=>{ const v=e.target.value; router.push(`/dashboard?datasetId=${encodeURIComponent(v)}`); }} className="rounded-lg border border-white/10 bg-slate-900/50 px-3 py-2 text-slate-100">
+          <select aria-label="Select dataset" value={datasetId} onChange={(e)=>{ const v=e.target.value; router.push(`/dashboard?datasetId=${encodeURIComponent(v)}`); }} className="rounded-lg border px-3 py-2 text-[var(--text)] border-[var(--ring)] bg-[var(--panel)]">
             {['demo-se','demo-de','demo-uk'].map(ds => (<option key={ds} value={ds}>{ds}</option>))}
           </select>
-          <button className="inline-flex items-center gap-2 rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-teal-700 hover:bg-teal-100 dark:border-teal-700 dark:bg-teal-900/30 dark:text-teal-200 dark:hover:bg-teal-900/50">
-            <Upload className="h-4 w-4" /> Upload data
+          <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 hover:bg-slate-50 border-[var(--ring)] text-[var(--text)]">
+            <Upload className="h-4 w-4" /> {t("dashboard.uploadData")}
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {kpis.map((k) => (
-          <div key={k.label} className="rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-            <div className="text-sm text-slate-600 dark:text-slate-400">{k.label}</div>
+        {kpis.map((k, idx) => (
+          <div key={k.label} className="card-muted p-4 shadow-md hover:shadow-lg rounded-xl transition-transform hover:-translate-y-0.5">
+            <div className="text-sm text-slate-600 dark:text-slate-400">{
+              [t('dashboard.kpi.gap'), t('dashboard.kpi.highVarianceRoles'), t('dashboard.kpi.riskSites'), t('dashboard.kpi.employees')][idx]
+            }</div>
             <div className="mt-2 flex items-baseline gap-2">
-              <div className="text-3xl font-semibold text-slate-900 dark:text-slate-100">{k.value}{k.suffix}</div>
-              <div className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ring-1 ${k.delta>=0 ? "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:ring-emerald-800" : "bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-200 dark:ring-rose-800"}`}>
+              <div className="text-3xl font-semibold text-[var(--text)]">{k.value}{k.suffix}</div>
+              <div className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ring-1 ${k.delta>=0 ? "bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]" : "bg-[var(--danger-soft-bg)] text-[var(--danger-soft-fg)] ring-[var(--danger-soft-ring)]"}`}>
                 {k.delta>=0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                 {k.delta>=0 ? "+" : ""}{k.delta}
               </div>
@@ -81,8 +85,8 @@ export default function DashboardClient(){
       </div>
 
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 xl:col-span-7 rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <div className="mb-2 text-sm text-slate-600 dark:text-slate-400">Gender Pay Gap Trend</div>
+        <div className="col-span-12 xl:col-span-7 card-muted rounded-xl p-4 shadow-md">
+          <div className="mb-2 text-sm text-slate-600 dark:text-slate-400">{t("dashboard.trend")}</div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={gapTrend}>
@@ -102,23 +106,27 @@ export default function DashboardClient(){
       </div>
 
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 xl:col-span-7 rounded-xl border bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div className="col-span-12 xl:col-span-7 card-muted rounded-xl p-4 shadow-md">
           <div className="mb-3 flex items-center justify-between">
-            <div className="text-sm text-slate-600 dark:text-slate-400">Insights</div>
+            <div className="text-sm subtle">{t('dashboard.insightsCard.title')}</div>
             <div className="flex items-center gap-2">
-              <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50">
-                <FileDown className="h-4 w-4" /> Export brief
+              <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 hover:bg-slate-50 border-[var(--ring)]">
+                <FileDown className="h-4 w-4" /> {t('insights.exportBrief')}
               </button>
             </div>
           </div>
           <div className="space-y-3">
-            {insights.map((it, i)=>(
+            {[
+              { title: t('dashboard.insights.sample1.title'), body: t('dashboard.insights.sample1.body') },
+              { title: t('dashboard.insights.sample2.title'), body: t('dashboard.insights.sample2.body') },
+              { title: t('dashboard.insights.sample3.title'), body: t('dashboard.insights.sample3.body') },
+            ].map((it, i)=>(
               <div key={i} className="rounded-lg border p-3 dark:border-slate-700">
-                <div className="font-medium text-slate-900 dark:text-slate-100">{it.title}</div>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{it.body}</p>
+                <div className="font-medium text-[var(--text)]">{it.title}</div>
+                <p className="mt-1 text-sm subtle">{it.body}</p>
                 <div className="mt-2 flex items-center gap-2">
-                  <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50">Simulate</button>
-                  <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50">Export</button>
+                  <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50">{t('common.simulate')}</button>
+                  <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-gray-50 dark:border-slate-700 dark:hover:bg-slate-700/50">{t('common.export')}</button>
                 </div>
               </div>
             ))}

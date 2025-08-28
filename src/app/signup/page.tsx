@@ -26,7 +26,7 @@ export default function SignupPage() {
   return (
     <main className="container py-20 md:py-24">
       <section className="card p-10 max-w-md mx-auto space-y-6">
-        <h1 className="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white">Create account</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-[var(--text)]">Create account</h1>
         <a className="btn btn-ghost" aria-label="Sign up with Google" href="/login">Continue with Google</a>
       </section>
     </main>

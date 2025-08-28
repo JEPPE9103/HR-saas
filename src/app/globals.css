@@ -1,8 +1,37 @@
 @import "tailwindcss";
 
 html, body { height: 100%; }
-/* Dark-only tokens */
+/* Theme tokens (light default, dark overrides) */
 :root{
+  --bg:#ffffff;
+  --panel:#ffffff;
+  --muted:#f8fafc;
+  --text:#0B1220;
+  --text-muted:#475569;
+  --ring:#E2E8F0;
+  --primary:#2563EB;
+  --primary-foreground:#ffffff;
+  --success:#16A34A;
+  --warning:#F59E0B;
+  --danger:#EF4444;
+  /* Soft state tokens for light mode */
+  --success-soft-bg: color-mix(in oklab, var(--success) 12%, #ffffff);
+  --success-soft-fg: color-mix(in oklab, var(--success) 55%, #000000);
+  --success-soft-ring: color-mix(in oklab, var(--success) 30%, #ffffff);
+  --warning-soft-bg: color-mix(in oklab, var(--warning) 12%, #ffffff);
+  --warning-soft-fg: color-mix(in oklab, var(--warning) 55%, #000000);
+  --warning-soft-ring: color-mix(in oklab, var(--warning) 30%, #ffffff);
+  --danger-soft-bg: color-mix(in oklab, var(--danger) 12%, #ffffff);
+  --danger-soft-fg: color-mix(in oklab, var(--danger) 55%, #000000);
+  --danger-soft-ring: color-mix(in oklab, var(--danger) 30%, #ffffff);
+  --chart-a:#3B82F6;
+  --chart-b:#EC4899;
+  --card: var(--panel);
+  --accent: var(--primary);
+  --accent-strong: #1D4ED8;
+}
+
+.dark{
   --bg:#0B1220;
   --panel:#0F172A;
   --muted:#0C1526;
@@ -14,6 +43,16 @@ html, body { height: 100%; }
   --success:#34D399;
   --warning:#FBBF24;
   --danger:#F87171;
+  /* Soft state tokens for dark mode */
+  --success-soft-bg: color-mix(in oklab, var(--success) 18%, transparent);
+  --success-soft-fg: color-mix(in oklab, var(--success) 80%, #ffffff);
+  --success-soft-ring: color-mix(in oklab, var(--success) 28%, #000000);
+  --warning-soft-bg: color-mix(in oklab, var(--warning) 18%, transparent);
+  --warning-soft-fg: color-mix(in oklab, var(--warning) 80%, #ffffff);
+  --warning-soft-ring: color-mix(in oklab, var(--warning) 28%, #000000);
+  --danger-soft-bg: color-mix(in oklab, var(--danger) 18%, transparent);
+  --danger-soft-fg: color-mix(in oklab, var(--danger) 80%, #ffffff);
+  --danger-soft-ring: color-mix(in oklab, var(--danger) 28%, #000000);
   --chart-a:#60A5FA;
   --chart-b:#F472B6;
   --card: var(--panel);
@@ -36,11 +75,12 @@ body{
 .btn{ @apply inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold shadow-sm transition; }
 .btn-primary{ background: var(--primary); color: var(--primary-foreground); @apply hover:brightness-95; }
 .dark .btn-primary:hover{ background: var(--accent-strong); }
-.btn-ghost{ background: #0f172a; color: #e5e7eb; border: 1px solid var(--ring); @apply hover:bg-slate-900; }
+.btn-ghost{ background: #ffffff; color: #0b1220; border: 1px solid var(--ring); @apply hover:bg-slate-50; }
+.dark .btn-ghost{ background: #0f172a; color: #e5e7eb; border: 1px solid var(--ring); @apply hover:bg-slate-900; }
 .badge{ @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium; }
 .badge-sky{ @apply border; border-color: color-mix(in oklab, var(--accent) 30%, transparent); color: var(--accent-strong); background: color-mix(in oklab, var(--accent) 10%, transparent); }
-.feature-icon{ @apply inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-slate-200 ring-1 ring-slate-700; }
+.feature-icon{ @apply inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 ring-1 ring-slate-200; }
+.dark .feature-icon{ @apply bg-slate-800 text-slate-200 ring-slate-700; }
 .subtle{ color: var(--text-muted); }
 
-/* Removed light-mode guard rails; dark-only app */
 

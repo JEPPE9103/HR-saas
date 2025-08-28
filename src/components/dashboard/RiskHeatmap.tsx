@@ -17,7 +17,7 @@ function colorForGap(gap: number): string {
 }
 
 export default function RiskHeatmap({
-  sites = ["Berlin", "Stockholm", "Copenhagen", "London", "Paris"],
+  sites = ["Volvo Cars", "H&M", "Ericsson", "Spotify", "Klarna"],
   roles = ["Engineer", "PM", "Sales", "Design", "Ops"],
   data,
 }: {

@@ -2,8 +2,10 @@
 
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import { useMemo } from "react";
+import { useI18n } from "@/providers/I18nProvider";
 
 export default function HeroChart(){
+  const { t } = useI18n();
   const data = useMemo(() => (
     [
       { m: "Aug", gap: 6.2 },
@@ -22,18 +24,18 @@ export default function HeroChart(){
   ), []);
 
   return (
-    <div className="relative h-72 w-full overflow-hidden rounded-2xl ring-1 ring-white/10 md:h-96 p-3 md:min-w-[520px]">
+    <div className="relative h-72 w-full overflow-hidden md:h-96 p-3 md:min-w-[520px] card-muted rounded-2xl shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
-          <CartesianGrid vertical={false} stroke="#334155" strokeOpacity={0.3} />
-          <XAxis dataKey="m" tick={{ fill: "#94a3b8", fontSize: 12 }} />
-          <YAxis tick={{ fill: "#94a3b8", fontSize: 12 }} />
+          <CartesianGrid vertical={false} stroke="var(--ring)" strokeOpacity={0.6} />
+          <XAxis dataKey="m" tick={{ fill: "#64748b", fontSize: 12 }} />
+          <YAxis tick={{ fill: "#64748b", fontSize: 12 }} />
           <Tooltip />
           <Line type="monotone" dataKey="gap" stroke="#2563EB" strokeWidth={3} dot={false} isAnimationActive />
-          <ReferenceLine y={2} stroke="#22c55e" strokeDasharray="3 3" label={{ value: "2% goal", fill: "#22c55e", position: "insideTopRight", fontSize: 12 }} />
+          <ReferenceLine y={2} stroke="#22c55e" strokeDasharray="3 3" label={{ value: t('home.chart.goal'), fill: "#22c55e", position: "insideTopRight", fontSize: 12 }} />
         </LineChart>
       </ResponsiveContainer>
-      <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-slate-300">Gender Pay Gap Trend</div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-slate-600">{t('dashboard.trend')}</div>
     </div>
   );
 }

@@ -36,7 +36,7 @@ export default function LoginPage() {
   return (
     <main className="container py-20 md:py-24">
       <section className="card p-10 max-w-md mx-auto space-y-6">
-        <h1 className="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white">Sign in</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-[var(--text)]">Sign in</h1>
         {err && (<div className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm">{err}</div>)}
         <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" className="rounded-md border px-3 py-2 bg-transparent" />
         <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Password" className="rounded-md border px-3 py-2 bg-transparent" />

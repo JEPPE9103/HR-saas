@@ -2,30 +2,32 @@
 
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
 import { CheckCircle2 } from "lucide-react";
 import { UserMenu } from "@/components/UserMenu";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-neutral-900/80">
+    <header className="sticky top-0 z-10 border-b border-[var(--ring)] bg-[var(--panel)]/90 backdrop-blur shadow-sm">
       <div className="px-4 h-14 w-full flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-500 text-white">+</div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--primary-foreground)]">+</div>
           <div className="text-lg font-semibold tracking-tight">
-            <span className="text-slate-900 dark:text-neutral-100">Pay</span>
-            <span className="text-slate-700 dark:text-neutral-300">Transparency</span>
+            <span className="text-[var(--text)]">Pay</span>
+            <span className="subtle">Transparency</span>
           </div>
-          <span className="ml-3 hidden sm:inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:ring-emerald-900">
+          <span className="ml-3 hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">
             <CheckCircle2 className="h-3.5 w-3.5" /> EU Directive Ready
           </span>
         </div>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/" className="hover:underline">Home</Link>
-          <Link href="/import" className="hover:underline">Import</Link>
-          <Link href="/dashboard" className="hover:underline">Dashboard</Link>
-          <Link href="/insights" className="hover:underline">Insights</Link>
-          <Link href="/simulate" className="hover:underline">Simulate</Link>
-          <Link href="/reports" className="hover:underline">Reports</Link>
+        <nav className="flex items-center gap-2 text-sm">
+          <Link href="/" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Home</Link>
+          <Link href="/import" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Import</Link>
+          <Link href="/dashboard" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Dashboard</Link>
+          <Link href="/insights" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Insights</Link>
+          <Link href="/simulate" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Simulate</Link>
+          <Link href="/reports" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Reports</Link>
+          <LanguageToggle />
           <ThemeToggle />
           <UserMenu />
         </nav>

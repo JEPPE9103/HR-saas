@@ -12,12 +12,12 @@ export default function FeatureCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
-      className="rounded-xl border border-white/10 bg-white/5 p-4 shadow-lg"
+      className="card-muted p-5 shadow-md hover:shadow-lg rounded-xl transition-transform hover:-translate-y-0.5"
     >
-      <div className="mb-2 flex items-center gap-2 text-slate-200">
+      <div className="mb-2 flex items-center gap-2 text-[var(--text)]">
         {icon}<h3 className="font-medium">{title}</h3>
       </div>
-      <p className="text-sm text-slate-400">{children}</p>
+      <p className="text-sm text-slate-600">{children}</p>
     </motion.div>
   );
 }

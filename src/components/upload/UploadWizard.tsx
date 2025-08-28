@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { UploadCloud, ShieldCheck, FileSpreadsheet, Check, AlertCircle } from "lucide-react";
 import * as XLSX from "xlsx";
+import { useI18n } from "@/providers/I18nProvider";
 
 export type Mapping = {
   gender?: string;
@@ -20,6 +21,7 @@ export default function UploadWizard({
   onAnalyze: (file: File, mapping: Mapping) => Promise<void>;
   onUseDemo: () => void;
 }) {
+  const { t } = useI18n();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [file, setFile] = useState<File | null>(null);
   const [columns, setColumns] = useState<string[]>([]);
@@ -82,32 +84,30 @@ export default function UploadWizard({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Upload employee data</h1>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-          Upload a CSV/Excel export from your HR system. Data is encrypted and processed in the EU.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--text)]">{t('upload.title')}</h1>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{t('upload.subtitle')}</p>
         <div className="mt-3 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/10 text-emerald-300 px-2 py-0.5 ring-1 ring-emerald-300/30"><ShieldCheck className="h-3 w-3"/> GDPR safe</span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100/10 text-indigo-300 px-2 py-0.5 ring-1 ring-indigo-300/30">EU directive ready</span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-teal-100/10 text-teal-300 px-2 py-0.5 ring-1 ring-teal-300/30">ISO 27001</span>
+          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]"><ShieldCheck className="h-3 w-3"/> {t('upload.badge.gdpr')}</span>
+          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">{t('upload.badge.euReady')}</span>
+          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">{t('upload.badge.iso')}</span>
         </div>
       </div>
 
       {/* Stepper */}
       <ol className="grid grid-cols-3 gap-3 text-sm">
-        {["Upload", "Map columns", "Analyze"].map((label, i) => (
+        {[t('upload.step.upload'), t('upload.step.map'), t('upload.step.analyze')].map((label, i) => (
           <li
             key={label}
             className={`rounded-lg px-3 py-2 ring-1 ${
               step > i + 1
-                ? "bg-emerald-50/10 ring-emerald-300/30 text-emerald-200"
-                : "bg-white/5 ring-white/10 text-slate-200"
+                ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+                : "bg-[var(--panel)] ring-[var(--ring)] text-[var(--text)]"
             } flex items-center gap-2`}
           >
             {step > i + 1 ? (
               <Check className="h-4 w-4" />
             ) : (
-              <span className="h-5 w-5 inline-flex items-center justify-center rounded-full bg-white/10">{i + 1}</span>
+              <span className="h-5 w-5 inline-flex items-center justify-center rounded-full bg-slate-100 text-slate-700">{i + 1}</span>
             )}
             {label}
           </li>
@@ -116,23 +116,23 @@ export default function UploadWizard({
 
       {/* Step 1: Upload */}
       {step === 1 && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-lg">
+        <div className="rounded-2xl border p-6 shadow-lg border-[var(--ring)] bg-[var(--panel)]">
           <div
-            className="rounded-xl border-2 border-dashed border-white/20 bg-slate-900/30 p-10 text-center hover:border-indigo-400/40 transition"
+            className="rounded-xl border-2 border-dashed p-10 text-center transition border-[var(--ring)] bg-[var(--panel)]"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault();
               if (e.dataTransfer.files?.[0]) onDrop(e.dataTransfer.files[0]);
             }}
           >
-            <UploadCloud className="mx-auto h-10 w-10 text-indigo-300" />
-            <p className="mt-3 text-slate-200">Drag & drop your .csv here</p>
-            <p className="text-xs text-slate-400">or</p>
+            <UploadCloud className="mx-auto h-10 w-10 text-indigo-600" />
+            <p className="mt-3 text-[var(--text)]">{t('upload.drop.hint')}</p>
+            <p className="text-xs text-slate-500">{t('upload.drop.or')}</p>
             <button
               onClick={() => inputRef.current?.click()}
               className="mt-3 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
             >
-              <FileSpreadsheet className="h-4 w-4" /> Select file
+              <FileSpreadsheet className="h-4 w-4" /> {t('upload.selectFile')}
             </button>
             <input
               ref={inputRef}
@@ -145,13 +145,13 @@ export default function UploadWizard({
               }}
             />
             <div className="mt-4">
-              <button onClick={onUseDemo} className="text-teal-300 hover:text-teal-200 text-sm underline">
-                Or try the demo dataset
+              <button onClick={onUseDemo} className="text-teal-700 hover:text-teal-800 text-sm underline">
+                {t('upload.tryDemo')}
               </button>
             </div>
           </div>
           {error && (
-            <p className="mt-3 inline-flex items-center gap-2 text-rose-300 text-sm">
+            <p className="mt-3 inline-flex items-center gap-2 text-rose-600 text-sm">
               <AlertCircle className="h-4 w-4" />
               {error}
             </p>
@@ -161,28 +161,28 @@ export default function UploadWizard({
 
       {/* Step 2: Mapping */}
       {step === 2 && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-lg">
-          <h3 className="mb-4 font-medium text-white">Map columns</h3>
+        <div className="rounded-2xl border p-6 shadow-lg border-[var(--ring)] bg-[var(--panel)]">
+          <h3 className="mb-4 font-medium text-[var(--text)]">{t('upload.map.title')}</h3>
           {columns.length === 0 ? (
-            <p className="text-sm text-slate-400">No columns detected. Please upload a CSV with a header row.</p>
+            <p className="text-sm text-slate-500">{t('upload.noColumns')}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {[
-                { key: "gender", label: "Gender" },
-                { key: "role", label: "Role" },
-                { key: "dept", label: "Department" },
-                { key: "site", label: "Site (optional)" },
-                { key: "country", label: "Country (optional)" },
-                { key: "basePay", label: "Base pay" },
+                { key: "gender", label: t('upload.field.gender') },
+                { key: "role", label: t('upload.field.role') },
+                { key: "dept", label: t('upload.field.dept') },
+                { key: "site", label: t('upload.field.site') },
+                { key: "country", label: t('upload.field.country') },
+                { key: "basePay", label: t('upload.field.basePay') },
               ].map((f) => (
                 <label key={f.key} className="text-sm">
-                  <div className="mb-1 text-slate-300">{f.label}</div>
+                  <div className="mb-1 text-slate-600">{f.label}</div>
                   <select
-                    className="w-full rounded-lg border border-white/10 bg-slate-900/50 px-3 py-2 text-slate-100"
+                    className="w-full rounded-lg border px-3 py-2 text-[var(--text)] border-[var(--ring)] bg-[var(--panel)]"
                     value={(mapping as any)[f.key] ?? ""}
                     onChange={(e) => setMapping((m) => ({ ...m, [f.key]: e.target.value }))}
                   >
-                    <option value="">Select column…</option>
+                    <option value="">{t('upload.selectColumn')}</option>
                     {columns.map((c) => (
                       <option key={c} value={c}>
                         {c}
@@ -199,31 +199,29 @@ export default function UploadWizard({
               disabled={!allMapped || busy || !file}
               className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-white disabled:opacity-50 hover:bg-teal-700"
             >
-              Analyze dataset
+              {t('upload.analyze')}
             </button>
             {busy && (
-              <div className="inline-flex items-center gap-2 text-xs text-slate-300">
+              <div className="inline-flex items-center gap-2 text-xs text-slate-500">
                 <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-indigo-400"/>
-                Processing…
+                {t('upload.processing')}
               </div>
             )}
-            <button onClick={() => setStep(1)} className="text-slate-300 hover:text-white">
-              Back
+            <button onClick={() => setStep(1)} className="text-slate-600 hover:text-slate-800">
+              {t('upload.back')}
             </button>
           </div>
-          <p className="mt-3 text-xs text-slate-400">
-            We never store names or emails. Only anonymized employee IDs are used. Minimum group size N≥10 enforced.
-          </p>
+          <p className="mt-3 text-xs text-slate-500">{t('upload.notice')}</p>
         </div>
       )}
 
       {/* Step 3: Done */}
       {step === 3 && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center shadow-lg">
-          <h3 className="text-xl font-semibold text-white">Insights generated</h3>
-          <p className="mt-2 text-slate-300">Your dashboard is ready.</p>
+        <div className="rounded-2xl border p-8 text-center shadow-lg border-[var(--ring)] bg-[var(--panel)]">
+          <h3 className="text-xl font-semibold text-[var(--text)]">{t('upload.done.title')}</h3>
+          <p className="mt-2 text-slate-600">{t('upload.done.subtitle')}</p>
           <a href="/dashboard" className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
-            Go to Dashboard
+            {t('upload.goToDashboard')}
           </a>
         </div>
       )}

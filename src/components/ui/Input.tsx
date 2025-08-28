@@ -11,7 +11,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={clsx(
         "w-full rounded-xl border border-[var(--ring)] bg-white px-3 py-2 text-sm text-[var(--text)] shadow-sm outline-none transition placeholder:text-slate-400",
-        "focus:ring-2 focus:ring-[var(--accent)] dark:bg-[#0f172a] dark:text-slate-200",
+        "focus:ring-2 focus:ring-[var(--accent)]",
         className
       )}
       {...props}

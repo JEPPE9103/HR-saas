@@ -17,8 +17,10 @@ import { datasetsRef } from "@/lib/models";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import UploadWizard, { Mapping } from "@/components/upload/UploadWizard";
+import { useI18n } from "@/providers/I18nProvider";
 
 export default function ImportPage() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const db = dbFactory();
   const router = useRouter();
@@ -61,7 +63,7 @@ export default function ImportPage() {
   return (
     <Protected>
     <div className="mx-auto w-full max-w-5xl px-6 py-8">
-      <div className="rounded-3xl border border-white/10 bg-slate-900/40 p-6 shadow-xl">
+      <div className="rounded-3xl border p-6 shadow-xl border-[var(--ring)] bg-[var(--panel)]">
         <UploadWizard
           onAnalyze={onAnalyze}
           onUseDemo={() => (window.location.href = "/dashboard?datasetId=demo-se")}
@@ -69,20 +71,20 @@ export default function ImportPage() {
       </div>
 
       {/* Trust panel */}
-      <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
-        <p><strong>Security & privacy.</strong> Data is processed in the EU, encrypted at rest and in transit. No PII required – names/emails/SSNs are not stored. Access controlled via RBAC and audit logging.</p>
+      <div className="mt-6 rounded-2xl border p-4 text-sm border-[var(--ring)] bg-[var(--panel)] text-[var(--text)]">
+        <p><strong>{t('import.trust.title')}</strong> {t('import.trust.body')}</p>
       </div>
 
       {/* Optional: show summary and data quality if we parsed locally */}
       {summary && (
         <div className="mt-6 card p-4">
-          <div className="text-sm text-slate-300">Rows imported: <strong>{imported}</strong> • Roles: <strong>{summary.roles}
-          </strong> • Departments: <strong>{summary.departments}</strong> <Link href="/dashboard" className="ml-2 underline">Open dashboard</Link></div>
+          <div className="text-sm text-slate-600">{t('import.summary.rows')}: <strong>{imported}</strong> • {t('import.summary.roles')}: <strong>{summary.roles}
+          </strong> • {t('import.summary.departments')}: <strong>{summary.departments}</strong> <Link href="/dashboard" className="ml-2 underline">{t('import.summary.open')}</Link></div>
         </div>
       )}
       {errors.length > 0 && (
         <div className="mt-4 card p-4">
-          <div className="text-sm text-rose-300">Validation errors ({errors.length}) – showing first 10.</div>
+          <div className="text-sm text-rose-600">{t('upload.validationErrors',).replace('{n}', String(errors.length))}</div>
         </div>
       )}
     </div>

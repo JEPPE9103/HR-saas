@@ -70,7 +70,7 @@ export function CopilotPanel({ datasetId }: { datasetId: string }) {
         >
           <div className="h-full rounded-l-3xl border-l border-[var(--ring)] bg-[var(--card)] shadow-2xl flex flex-col overflow-hidden">
             <div className="p-4 border-b border-[var(--ring)] flex items-center justify-between">
-              <h2 className="text-base font-semibold text-white">Pay Transparency Copilot</h2>
+              <h2 className="text-base font-semibold text-[var(--text)]">Pay Transparency Copilot</h2>
               <Button variant="ghost" onClick={() => setOpen(false)}>Close</Button>
             </div>
             <div ref={panelRef} className="flex-1 overflow-auto p-4 space-y-3">
@@ -95,7 +95,7 @@ export function CopilotPanel({ datasetId }: { datasetId: string }) {
                 <Quick label="/report" value="/report export" />
               </div>
               <div className="flex gap-2">
-                <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask a question..." className="text-white placeholder:text-slate-400" />
+                <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask a question..." />
                 <Button onClick={send}>Send</Button>
               </div>
             </div>

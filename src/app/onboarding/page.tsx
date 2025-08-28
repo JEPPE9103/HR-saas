@@ -53,23 +53,23 @@ export default function OnboardingPage(){
   return (
     <main className="container py-12 md:py-16 space-y-8">
       <section className="card p-8 max-w-2xl mx-auto">
-        <h1 className="text-2xl md:text-3xl font-semibold text-white">Create your organization account</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-[var(--text)]">Create your organization account</h1>
         <div className="mt-4 space-y-4">
-          <h2 className="text-base font-semibold text-slate-200">Step 1 — Organization Information</h2>
+          <h2 className="text-base font-semibold text-[var(--text)]">Step 1 — Organization Information</h2>
           <div className="grid gap-3 md:grid-cols-2">
             <div>
-              <label className="text-sm text-slate-400">Company name</label>
+              <label className="text-sm text-slate-600">Company name</label>
               <input
-                className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder-slate-500"
+                className="w-full rounded-xl border px-3 py-2 text-sm text-[var(--text)] border-[var(--ring)] bg-[var(--panel)] placeholder-slate-400"
                 placeholder="Company name"
                 value={companyName}
                 onChange={(e)=>setCompanyName(e.target.value)}
               />
             </div>
             <div>
-              <label className="text-sm text-slate-400">Country</label>
+              <label className="text-sm text-slate-600">Country</label>
               <input
-                className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder-slate-500"
+                className="w-full rounded-xl border px-3 py-2 text-sm text-[var(--text)] border-[var(--ring)] bg-[var(--panel)] placeholder-slate-400"
                 placeholder="Country (e.g., SE)"
                 value={country}
                 onChange={(e)=>setCountry(e.target.value)}
@@ -81,15 +81,15 @@ export default function OnboardingPage(){
       </section>
 
       <section ref={stepBRef} className="card p-8 max-w-2xl mx-auto">
-        <h2 className="text-base font-semibold text-slate-200">Step 2 — Dataset</h2>
+        <h2 className="text-base font-semibold text-[var(--text)]">Step 2 — Dataset</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <a href="/import" className="card p-6 text-center">
-            <div className="text-sm font-semibold text-white">Upload CSV now</div>
-            <div className="text-xs text-slate-400">Go to import</div>
+            <div className="text-sm font-semibold text-[var(--text)]">Upload CSV now</div>
+            <div className="text-xs text-slate-500">Go to import</div>
           </a>
           <button className="card p-6 text-center" onClick={useDemo}>
-            <div className="text-sm font-semibold text-white">Use demo dataset</div>
-            <div className="text-xs text-slate-400">Create demo and open dashboard</div>
+            <div className="text-sm font-semibold text-[var(--text)]">Use demo dataset</div>
+            <div className="text-xs text-slate-500">Create demo and open dashboard</div>
           </button>
         </div>
       </section>

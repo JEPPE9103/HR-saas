@@ -1,43 +1,94 @@
-import CopilotDemo from "./CopilotDemo";
-import HeroChart from "./HeroChart";
+"use client";
 
-export default function HeroSection(){
+import CopilotDemo from "./CopilotDemo";
+import { useI18n } from "@/providers/I18nProvider";
+import HeroChart from "./HeroChart";
+import { ShieldCheck } from "lucide-react";
+
+export default function HeroSection() {
+  const { t } = useI18n();
   return (
     <section className="grid items-start gap-8 md:grid-cols-2">
-      <div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-          EU Directive ready • GDPR safe
+      <div className="relative">
+        {/* Glow: av i light, på i dark */}
+        <div
+          className="hidden dark:block pointer-events-none absolute -inset-x-4 -top-6 h-24
+                     bg-gradient-to-r from-indigo-500/20 to-emerald-500/20 blur-2xl"
+          aria-hidden="true"
+        />
+
+        {/* Badges */}
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs
+                           ring-1 ring-zinc-200 bg-white text-zinc-700
+                           dark:ring-[var(--ring)] dark:bg-[var(--panel)] dark:text-[var(--text)]">
+            <ShieldCheck className="h-3 w-3" /> {t("dashboard.euReady")}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs
+                           ring-1 ring-zinc-200 bg-white text-zinc-700
+                           dark:ring-[var(--ring)] dark:bg-[var(--panel)] dark:text-[var(--text)]">
+            <ShieldCheck className="h-3 w-3" /> {t("upload.badge.gdpr")}
+          </span>
         </div>
-        <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-white md:text-5xl">
-          Pay Equity. <span className="text-indigo-300">Simplified.</span>
+
+        {/* Titel: mörk i light, gradient i dark */}
+        <h1 className="mt-4 text-balance text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+          {/* Light mode: tydlig mörk text */}
+          <span className="inline dark:hidden text-zinc-900">
+            {t("hero.title")}
+          </span>
+          {/* Dark mode: gradient */}
+          <span className="hidden dark:inline bg-gradient-to-br from-indigo-300 via-indigo-200 to-emerald-200 bg-clip-text text-transparent drop-shadow-sm">
+            {t("hero.title")}
+          </span>
         </h1>
-        <p className="mt-3 max-w-lg text-slate-300">
-          Our AI Copilot analyzes your pay data, detects outliers, and checks compliance guardrails. Export an executive‑ready brief in minutes.
+
+        {/* Subtitel */}
+        <p className="mt-3 max-w-lg text-zinc-700 dark:text-slate-400">
+          {t("hero.subtitle")}
         </p>
-        {/* Metrics row + CTAs */}
+
+        {/* KPI-rad */}
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-            <div className="text-xs text-slate-300">Avg gap</div>
-            <div className="text-2xl font-semibold text-white">5.6%</div>
+          <div className="card-muted rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md
+                          dark:border-[var(--ring)] dark:bg-[var(--panel)]">
+            <div className="text-xs text-zinc-500 dark:subtle">{t("metrics.avgGap")}</div>
+            <div className="text-2xl font-semibold text-zinc-900 dark:text-[var(--text)]">5.6%</div>
           </div>
-          <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-            <div className="text-xs text-slate-300">Sites with risk</div>
-            <div className="text-2xl font-semibold text-white">2</div>
+          <div className="card-muted rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md
+                          dark:border-[var(--ring)] dark:bg-[var(--panel)]">
+            <div className="text-xs text-zinc-500 dark:subtle">{t("metrics.sitesWithRisk")}</div>
+            <div className="text-2xl font-semibold text-zinc-900 dark:text-[var(--text)]">2</div>
           </div>
-          <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-            <div className="text-xs text-slate-300">Time to export</div>
-            <div className="text-2xl font-semibold text-white">&lt; 2 min</div>
+          <div className="card-muted rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md
+                          dark:border-[var(--ring)] dark:bg-[var(--panel)]">
+            <div className="text-xs text-zinc-500 dark:subtle">{t("metrics.timeToExport")}</div>
+            <div className="text-2xl font-semibold text-zinc-900 dark:text-[var(--text)]">&lt; 2 min</div>
           </div>
         </div>
+
+        {/* Knappar */}
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <a href="/import" className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">Get started</a>
-          <a href="/dashboard?datasetId=demo-se" className="rounded-lg border border-teal-300/40 bg-teal-300/10 px-4 py-2 text-teal-200 hover:bg-teal-300/20">Try demo</a>
-          <div className="ml-2 hidden md:block"><CopilotDemo /></div>
+          <a
+            href="/import"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+          >
+            {t("cta.getStarted")}
+          </a>
+          <a
+            href="/dashboard?datasetId=demo-se"
+            className="rounded-lg border border-zinc-200 px-4 py-2 text-zinc-900 hover:bg-zinc-100
+                       dark:border-[var(--ring)] dark:text-zinc-200 dark:hover:bg-zinc-800"
+          >
+            {t("cta.tryDemo")}
+          </a>
+          <div className="ml-2 hidden md:block">
+            <CopilotDemo />
+          </div>
         </div>
       </div>
+
       <HeroChart />
     </section>
   );
 }
-
-
