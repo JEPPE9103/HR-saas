@@ -17,7 +17,8 @@ export default function RiskPanel({ items }: { items?: Item[] }){
   const { setOpen, setDefaults } = useSimulationDrawer();
   const [mode, setMode] = useState<"list"|"bars">("bars");
   const roles = ["Engineer","PM","Sales","Design","Ops"]; // for demo generation
-  const sites = ["Berlin","Stockholm","Copenhagen","London","Paris"];
+  // Swedish market demo labels (cities/companies)
+  const sites = ["Stockholm","Göteborg","Malmö","Uppsala","Västerås"];
 
   const data: Item[] = useMemo(()=>{
     if(items) return items;
