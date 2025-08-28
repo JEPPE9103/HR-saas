@@ -83,4 +83,18 @@ body{
 .dark .feature-icon{ @apply bg-slate-800 text-slate-200 ring-slate-700; }
 .subtle{ color: var(--text-muted); }
 
+/* Scroll animation for trust logos */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
 

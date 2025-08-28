@@ -15,7 +15,7 @@ function colorForGap(gap: number): string {
 }
 
 export default function RiskPanel({ items }: { items?: Item[] }){
-  const { t } = useI18n();
+  const { t: translate } = useI18n();
   const { setOpen, setDefaults } = useSimulationDrawer();
   const [mode, setMode] = useState<"list"|"bars">("bars");
   const roles = ["Engineer","PM","Sales","Design","Ops"]; // for demo generation
@@ -38,7 +38,7 @@ export default function RiskPanel({ items }: { items?: Item[] }){
   return (
     <div className="card-muted p-4 rounded-xl shadow-md">
       <div className="mb-2 flex items-center justify-between text-sm">
-        <div className="subtle">{t("dashboard.riskPanel")}</div>
+        <div className="subtle">{translate("dashboard.riskPanel")}</div>
         <div className="inline-flex rounded-md border overflow-hidden border-[var(--ring)]">
           <button
             aria-pressed={mode==='bars'}
@@ -49,7 +49,7 @@ export default function RiskPanel({ items }: { items?: Item[] }){
             }`}
             onClick={()=>setMode('bars')}
           >
-            {t('common.bars')}
+            {translate('common.bars')}
           </button>
           <button
             aria-pressed={mode==='list'}
@@ -60,7 +60,7 @@ export default function RiskPanel({ items }: { items?: Item[] }){
             }`}
             onClick={()=>setMode('list')}
           >
-            {t('common.list')}
+            {translate('common.list')}
           </button>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function RiskPanel({ items }: { items?: Item[] }){
                     >
                       {t.gapPercent}%
                     </span>
-                    <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-slate-50 border-[var(--ring)]" onClick={()=>{ setDefaults({ role: t.role, percent: 5 }); setOpen(true);}}>{t("common.simulate")}</button>
+                    <button className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-slate-50 border-[var(--ring)]" onClick={()=>{ setDefaults({ role: t.role, percent: 5 }); setOpen(true);}}>{translate("common.simulate")}</button>
                   </div>
                 </li>
               ))}

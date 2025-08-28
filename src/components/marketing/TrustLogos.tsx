@@ -1,14 +1,25 @@
 "use client";
 
 export function TrustLogos(){
-  const logos = ["astra","nordtech","kronaco","peoplenation","datalegder","nordbank"];
+  const companies = [
+    "NordTech", "KronaCo", "PeopleNation", "DataLedger", "Astra AB", "NordBank",
+    "NordTech", "KronaCo", "PeopleNation", "DataLedger", "Astra AB", "NordBank" // Duplicate for seamless loop
+  ];
+  
   return (
     <div className="mt-10 rounded-2xl border p-4 border-[var(--ring)] bg-[var(--panel)]">
-      <p className="mb-4 text-center text-xs tracking-wide text-slate-500">TRUSTED BY HR & FINANCE TEAMS</p>
-      <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-6">
-        {logos.map(l => (
-          <img key={l} src={`/logos/${l}.svg`} alt="" className="mx-auto h-6 opacity-70 transition hover:opacity-100" />
-        ))}
+      <p className="mb-4 text-center text-xs tracking-wide text-indigo-600 dark:text-slate-400">TRUSTED BY HR & FINANCE TEAMS</p>
+      <div className="relative overflow-hidden rounded-xl bg-indigo-50 dark:bg-slate-800/50 p-3">
+        <div className="flex animate-scroll whitespace-nowrap">
+          {companies.map((company, index) => (
+            <div 
+              key={index} 
+              className="mx-6 flex-shrink-0 text-sm font-medium text-indigo-700 dark:text-slate-300"
+            >
+              {company}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

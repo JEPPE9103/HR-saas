@@ -14,7 +14,7 @@ const SAMPLE_KEYS = [
   { id:"1", severity:"High",   t:{ title:"insights.sample1.title", subtitle:"insights.sample1.subtitle", rec:"insights.sample1.rec" } },
   { id:"2", severity:"High",   t:{ title:"insights.sample2.title", subtitle:"insights.sample2.subtitle", rec:"insights.sample2.rec" } },
   { id:"3", severity:"Medium", t:{ title:"insights.sample3.title", subtitle:"insights.sample3.subtitle", rec:"insights.sample3.rec" } },
-  { id:"4", severity:"Low",    t:{ title:"insights.sample4.title", subtitle:"insights.sample4.subtitle" } },
+  { id:"4", severity:"Low",    t:{ title:"insights.sample4.title", subtitle:"insights.sample4.subtitle", rec: undefined } },
 ] as const;
 
 type Row = { role:string; gap:number; n:number; severity:"High"|"Medium"|"Low" };

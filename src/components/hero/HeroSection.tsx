@@ -20,12 +20,12 @@ export default function HeroSection() {
         {/* Badges */}
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs
-                           ring-1 ring-zinc-200 bg-white text-zinc-700
+                           ring-1 ring-zinc-200 bg-white text-zinc-800
                            dark:ring-[var(--ring)] dark:bg-[var(--panel)] dark:text-[var(--text)]">
             <ShieldCheck className="h-3 w-3" /> {t("dashboard.euReady")}
           </span>
           <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs
-                           ring-1 ring-zinc-200 bg-white text-zinc-700
+                           ring-1 ring-zinc-200 bg-white text-zinc-800
                            dark:ring-[var(--ring)] dark:bg-[var(--panel)] dark:text-[var(--text)]">
             <ShieldCheck className="h-3 w-3" /> {t("upload.badge.gdpr")}
           </span>
@@ -44,7 +44,7 @@ export default function HeroSection() {
         </h1>
 
         {/* Subtitel */}
-        <p className="mt-3 max-w-lg text-zinc-700 dark:text-slate-400">
+        <p className="mt-3 max-w-lg text-zinc-800 dark:text-slate-400">
           {t("hero.subtitle")}
         </p>
 
