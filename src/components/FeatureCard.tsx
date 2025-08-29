@@ -17,7 +17,7 @@ export default function FeatureCard({
       <div className="mb-2 flex items-center gap-2 text-[var(--text)]">
         {icon}<h3 className="font-medium">{title}</h3>
       </div>
-      <p className="text-sm text-slate-600">{children}</p>
+      <p className="text-sm text-[var(--text-muted)]">{children}</p>
     </motion.div>
   );
 }

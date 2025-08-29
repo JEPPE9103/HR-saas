@@ -1,9 +1,20 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { UploadCloud, ShieldCheck, FileSpreadsheet, Check, AlertCircle } from "lucide-react";
+import { UploadCloud, ShieldCheck, FileSpreadsheet, Check, AlertCircle, ArrowLeft } from "lucide-react";
 import * as XLSX from "xlsx";
 import { useI18n } from "@/providers/I18nProvider";
+import { z } from "zod";
+
+// Zod schema for validation
+const mappingSchema = z.object({
+  gender: z.string().min(1, "Gender column is required"),
+  role: z.string().min(1, "Role column is required"),
+  basePay: z.string().min(1, "Base pay column is required"),
+  dept: z.string().optional(),
+  site: z.string().optional(),
+  country: z.string().optional(),
+});
 
 export type Mapping = {
   gender?: string;
@@ -13,6 +24,8 @@ export type Mapping = {
   country?: string;
   basePay?: string;
 };
+
+type PreviewRow = Record<string, string | number>;
 
 export default function UploadWizard({
   onAnalyze,
@@ -26,6 +39,8 @@ export default function UploadWizard({
   const [file, setFile] = useState<File | null>(null);
   const [columns, setColumns] = useState<string[]>([]);
   const [mapping, setMapping] = useState<Mapping>({});
+  const [previewData, setPreviewData] = useState<PreviewRow[]>([]);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -33,7 +48,9 @@ export default function UploadWizard({
   function onDrop(f: File) {
     setFile(f);
     setError(null);
+    setValidationError(null);
     const reader = new FileReader();
+    
     // Support CSV and XLSX by sniffing extension
     const name = f.name.toLowerCase();
     if (name.endsWith(".xlsx") || name.endsWith(".xls")) {
@@ -41,29 +58,64 @@ export default function UploadWizard({
         const data = new Uint8Array(reader.result as ArrayBuffer);
         const wb = XLSX.read(data, { type: "array" });
         const ws = wb.Sheets[wb.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(ws, { raw: false });
         const header = XLSX.utils.sheet_to_json(ws, { header: 1, range: 0, raw: false })[0] as string[] | undefined;
         const cols = (header || []).map((c) => String(c).trim()).filter(Boolean);
         setColumns(cols);
+        setPreviewData(jsonData.slice(0, 10) as PreviewRow[]);
         setStep(2);
       };
       reader.readAsArrayBuffer(f);
     } else {
       reader.onload = () => {
         const text = String(reader.result || "");
-        const header = text.split(/\r?\n/)[0] || "";
+        const lines = text.split(/\r?\n/).filter(line => line.trim());
+        const header = lines[0] || "";
         const cols = header
           .split(",")
           .map((c) => c.trim())
           .filter(Boolean);
+        
+        // Parse CSV data for preview
+        const previewRows: PreviewRow[] = [];
+        for (let i = 1; i < Math.min(lines.length, 11); i++) {
+          const values = lines[i].split(",").map(v => v.trim());
+          const row: PreviewRow = {};
+          cols.forEach((col, index) => {
+            row[col] = values[index] || "";
+          });
+          previewRows.push(row);
+        }
+        
         setColumns(cols);
+        setPreviewData(previewRows);
         setStep(2);
       };
       reader.readAsText(f);
     }
   }
 
+  function validateMapping(): boolean {
+    try {
+      mappingSchema.parse(mapping);
+      setValidationError(null);
+      return true;
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const errorMessage = (err as any).errors?.map((e: any) => e.message)?.join(", ") || "Validation failed";
+        setValidationError(errorMessage);
+      }
+      return false;
+    }
+  }
+
   async function handleAnalyze() {
     if (!file) return;
+    
+    if (!validateMapping()) {
+      return;
+    }
+    
     setBusy(true);
     try {
       // fake progress bar while awaiting onAnalyze
@@ -77,7 +129,15 @@ export default function UploadWizard({
     }
   }
 
-  const req = ["gender", "role", "dept", "basePay"] as const;
+  function goBack() {
+    if (step === 2) {
+      setStep(1);
+      setMapping({});
+      setValidationError(null);
+    }
+  }
+
+  const req = ["gender", "role", "basePay"] as const;
   const allMapped = req.every((k) => (mapping as any)[k]);
 
   return (
@@ -85,7 +145,7 @@ export default function UploadWizard({
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-[var(--text)]">{t('upload.title')}</h1>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{t('upload.subtitle')}</p>
+        <p className="mt-1 text-sm text-[var(--text-muted)]">{t('upload.subtitle')}</p>
         <div className="mt-3 flex items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]"><ShieldCheck className="h-3 w-3"/> {t('upload.badge.gdpr')}</span>
           <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">{t('upload.badge.euReady')}</span>
@@ -100,14 +160,14 @@ export default function UploadWizard({
             key={label}
             className={`rounded-lg px-3 py-2 ring-1 ${
               step > i + 1
-                ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+                ? "bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]"
                 : "bg-[var(--panel)] ring-[var(--ring)] text-[var(--text)]"
             } flex items-center gap-2`}
           >
             {step > i + 1 ? (
               <Check className="h-4 w-4" />
             ) : (
-              <span className="h-5 w-5 inline-flex items-center justify-center rounded-full bg-slate-100 text-slate-700">{i + 1}</span>
+              <span className="h-5 w-5 inline-flex items-center justify-center rounded-full bg-[var(--neutral-soft-bg)] text-[var(--text)]">{i + 1}</span>
             )}
             {label}
           </li>
@@ -125,12 +185,12 @@ export default function UploadWizard({
               if (e.dataTransfer.files?.[0]) onDrop(e.dataTransfer.files[0]);
             }}
           >
-            <UploadCloud className="mx-auto h-10 w-10 text-indigo-600" />
+            <UploadCloud className="mx-auto h-10 w-10 text-[var(--accent)]" />
             <p className="mt-3 text-[var(--text)]">{t('upload.drop.hint')}</p>
-            <p className="text-xs text-slate-500">{t('upload.drop.or')}</p>
+            <p className="text-xs text-[var(--text-muted)]">{t('upload.drop.or')}</p>
             <button
               onClick={() => inputRef.current?.click()}
-              className="mt-3 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+              className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-4 py-2 text-white hover:bg-[var(--accent-strong)]"
             >
               <FileSpreadsheet className="h-4 w-4" /> {t('upload.selectFile')}
             </button>
@@ -145,16 +205,18 @@ export default function UploadWizard({
               }}
             />
             <div className="mt-4">
-              <button onClick={onUseDemo} className="text-teal-700 hover:text-teal-800 text-sm underline">
+              <button onClick={onUseDemo} className="text-[var(--accent)] hover:text-[var(--accent-strong)] text-sm underline">
                 {t('upload.tryDemo')}
               </button>
             </div>
           </div>
           {error && (
-            <p className="mt-3 inline-flex items-center gap-2 text-rose-600 text-sm">
-              <AlertCircle className="h-4 w-4" />
-              {error}
-            </p>
+            <div className="mt-3 rounded-lg border border-[var(--danger-soft-ring)] bg-[var(--danger-soft-bg)] p-3">
+              <p className="inline-flex items-center gap-2 text-[var(--danger-soft-fg)] text-sm">
+                <AlertCircle className="h-4 w-4" />
+                {error}
+              </p>
+            </div>
           )}
         </div>
       )}
@@ -162,25 +224,85 @@ export default function UploadWizard({
       {/* Step 2: Mapping */}
       {step === 2 && (
         <div className="rounded-2xl border p-6 shadow-lg border-[var(--ring)] bg-[var(--panel)]">
-          <h3 className="mb-4 font-medium text-[var(--text)]">{t('upload.map.title')}</h3>
+          <div className="flex items-center gap-3 mb-4">
+            <button
+              onClick={goBack}
+              className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--text)] transition"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </button>
+            <h3 className="font-medium text-[var(--text)]">{t('upload.map.title')}</h3>
+          </div>
+
+          {/* File Preview */}
+          {previewData.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-sm font-medium text-[var(--text)] mb-3">File Preview (first 10 rows)</h4>
+              <div className="overflow-x-auto rounded-lg border border-[var(--ring)]">
+                <table className="w-full text-xs">
+                  <thead className="bg-[var(--neutral-soft-bg)]">
+                    <tr>
+                      {columns.map((col) => (
+                        <th key={col} className="px-3 py-2 text-left text-[var(--text)] font-medium">
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewData.map((row, index) => (
+                      <tr key={index} className="border-t border-[var(--ring)]">
+                        {columns.map((col) => (
+                          <td key={col} className="px-3 py-2 text-[var(--text-muted)]">
+                            {String(row[col] || "").slice(0, 20)}
+                            {String(row[col] || "").length > 20 ? "..." : ""}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Validation Error */}
+          {validationError && (
+            <div className="mb-4 rounded-lg border border-[var(--danger-soft-ring)] bg-[var(--danger-soft-bg)] p-3">
+              <p className="inline-flex items-center gap-2 text-[var(--danger-soft-fg)] text-sm">
+                <AlertCircle className="h-4 w-4" />
+                {validationError}
+              </p>
+            </div>
+          )}
+
           {columns.length === 0 ? (
-            <p className="text-sm text-slate-500">{t('upload.noColumns')}</p>
+            <p className="text-sm text-[var(--text-muted)]">{t('upload.noColumns')}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {[
-                { key: "gender", label: t('upload.field.gender') },
-                { key: "role", label: t('upload.field.role') },
-                { key: "dept", label: t('upload.field.dept') },
-                { key: "site", label: t('upload.field.site') },
-                { key: "country", label: t('upload.field.country') },
-                { key: "basePay", label: t('upload.field.basePay') },
+                { key: "gender", label: t('upload.field.gender'), required: true },
+                { key: "role", label: t('upload.field.role'), required: true },
+                { key: "dept", label: t('upload.field.dept'), required: false },
+                { key: "site", label: t('upload.field.site'), required: false },
+                { key: "country", label: t('upload.field.country'), required: false },
+                { key: "basePay", label: t('upload.field.basePay'), required: true },
               ].map((f) => (
                 <label key={f.key} className="text-sm">
-                  <div className="mb-1 text-slate-600">{f.label}</div>
+                  <div className="mb-1 text-[var(--text)]">
+                    {f.label}
+                    {f.required && <span className="text-[var(--danger)] ml-1">*</span>}
+                  </div>
                   <select
-                    className="w-full rounded-lg border px-3 py-2 text-[var(--text)] border-[var(--ring)] bg-[var(--panel)]"
+                    className={`w-full rounded-lg border px-3 py-2 text-[var(--text)] border-[var(--ring)] bg-[var(--panel)] ${
+                      f.required && !(mapping as any)[f.key] ? 'border-[var(--danger-soft-ring)]' : ''
+                    }`}
                     value={(mapping as any)[f.key] ?? ""}
-                    onChange={(e) => setMapping((m) => ({ ...m, [f.key]: e.target.value }))}
+                    onChange={(e) => {
+                      setMapping((m) => ({ ...m, [f.key]: e.target.value }));
+                      setValidationError(null);
+                    }}
                   >
                     <option value="">{t('upload.selectColumn')}</option>
                     {columns.map((c) => (
@@ -197,21 +319,18 @@ export default function UploadWizard({
             <button
               onClick={handleAnalyze}
               disabled={!allMapped || busy || !file}
-              className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-white disabled:opacity-50 hover:bg-teal-700"
+              className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-4 py-2 text-white disabled:opacity-50 hover:bg-[var(--accent-strong)]"
             >
               {t('upload.analyze')}
             </button>
             {busy && (
-              <div className="inline-flex items-center gap-2 text-xs text-slate-500">
-                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-indigo-400"/>
+              <div className="inline-flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-[var(--accent)]"/>
                 {t('upload.processing')}
               </div>
             )}
-            <button onClick={() => setStep(1)} className="text-slate-600 hover:text-slate-800">
-              {t('upload.back')}
-            </button>
           </div>
-          <p className="mt-3 text-xs text-slate-500">{t('upload.notice')}</p>
+          <p className="mt-3 text-xs text-[var(--text-muted)]">{t('upload.notice')}</p>
         </div>
       )}
 
@@ -219,8 +338,8 @@ export default function UploadWizard({
       {step === 3 && (
         <div className="rounded-2xl border p-8 text-center shadow-lg border-[var(--ring)] bg-[var(--panel)]">
           <h3 className="text-xl font-semibold text-[var(--text)]">{t('upload.done.title')}</h3>
-          <p className="mt-2 text-slate-600">{t('upload.done.subtitle')}</p>
-          <a href="/dashboard" className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+          <p className="mt-2 text-[var(--text-muted)]">{t('upload.done.subtitle')}</p>
+          <a href="/dashboard" className="mt-4 inline-block rounded-lg bg-[var(--accent)] px-4 py-2 text-white hover:bg-[var(--accent-strong)]">
             {t('upload.goToDashboard')}
           </a>
         </div>

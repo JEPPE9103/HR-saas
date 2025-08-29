@@ -34,7 +34,16 @@ export default function InsightsClient(){
   const db = dbFactory();
   const [severity, setSeverity] = useState<"All"|"High"|"Medium"|"Low">("All");
   const [queryText, setQueryText] = useState("");
-  const [feedData, setFeedData] = useState<Insight[]>(SAMPLE_KEYS.map(s=>({ id:s.id, severity:s.severity as any, title:t(s.t.title), subtitle:t(s.t.subtitle), recommendation:s.t.rec ? t(s.t.rec) : undefined })));
+  const [feedData, setFeedData] = useState<Insight[]>(SAMPLE_KEYS.map(s=>{
+    const recKey = (s.t as { rec?: string }).rec;
+    return { 
+      id:s.id, 
+      severity:s.severity as any, 
+      title:t(s.t.title), 
+      subtitle:t(s.t.subtitle), 
+      recommendation: recKey ? t(recKey) : undefined 
+    };
+  }));
   const [tableData, setTableData] = useState(TABLE);
   const [loading, setLoading] = useState(false);
   const [isSample, setIsSample] = useState(true);
@@ -72,7 +81,16 @@ export default function InsightsClient(){
           setFeedData(list);
         } else {
           setIsSample(true);
-          setFeedData(SAMPLE_KEYS.map(s=>({ id:s.id, severity:s.severity as any, title:t(s.t.title), subtitle:t(s.t.subtitle), recommendation:s.t.rec ? t(s.t.rec) : undefined })));
+          setFeedData(SAMPLE_KEYS.map(s=>{
+            const recKey = (s.t as { rec?: string }).rec;
+            return { 
+              id:s.id, 
+              severity:s.severity as any, 
+              title:t(s.t.title), 
+              subtitle:t(s.t.subtitle), 
+              recommendation: recKey ? t(recKey) : undefined 
+            };
+          }));
         }
         setTableData(table);
       } finally {
@@ -85,7 +103,16 @@ export default function InsightsClient(){
   // Recompute sample items on language change
   useEffect(()=>{
     if(isSample){
-      setFeedData(SAMPLE_KEYS.map(s=>({ id:s.id, severity:s.severity as any, title:t(s.t.title), subtitle:t(s.t.subtitle), recommendation:s.t.rec ? t(s.t.rec) : undefined })));
+      setFeedData(SAMPLE_KEYS.map(s=>{
+        const recKey = (s.t as { rec?: string }).rec;
+        return { 
+          id:s.id, 
+          severity:s.severity as any, 
+          title:t(s.t.title), 
+          subtitle:t(s.t.subtitle), 
+          recommendation: recKey ? t(recKey) : undefined 
+        };
+      }));
     }
   }, [t, isSample]);
 
@@ -153,8 +180,14 @@ export default function InsightsClient(){
           <InsightCard key={i.id} i={i} onSimulate={simulate} onExport={exportOne} />
         ))}
         {feed.length===0 && (
-          <div className="col-span-full rounded-xl border p-6 text-center text-sm text-muted-foreground border-[var(--ring)] bg-[var(--panel)]">
-            {t("insights.empty")}
+          <div className="col-span-full flex items-center justify-center py-12">
+            <div className="rounded-xl border p-8 text-center border-[var(--ring)] bg-[var(--panel)] max-w-md">
+              <div className="text-4xl mb-4">🔍</div>
+              <h3 className="text-lg font-medium text-[var(--text)] mb-2">No insights found</h3>
+              <p className="text-sm text-[var(--text-muted)]">
+                {t("insights.empty")}
+              </p>
+            </div>
           </div>
         )}
       </div>

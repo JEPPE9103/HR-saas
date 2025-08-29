@@ -78,13 +78,13 @@ export default function ImportPage() {
       {/* Optional: show summary and data quality if we parsed locally */}
       {summary && (
         <div className="mt-6 card p-4">
-          <div className="text-sm text-slate-600">{t('import.summary.rows')}: <strong>{imported}</strong> • {t('import.summary.roles')}: <strong>{summary.roles}
+          <div className="text-sm text-[var(--text-muted)]">{t('import.summary.rows')}: <strong>{imported}</strong> • {t('import.summary.roles')}: <strong>{summary.roles}
           </strong> • {t('import.summary.departments')}: <strong>{summary.departments}</strong> <Link href="/dashboard" className="ml-2 underline">{t('import.summary.open')}</Link></div>
         </div>
       )}
       {errors.length > 0 && (
         <div className="mt-4 card p-4">
-          <div className="text-sm text-rose-600">{t('upload.validationErrors',).replace('{n}', String(errors.length))}</div>
+          <div className="text-sm text-[var(--danger)]">{t('upload.validationErrors',).replace('{n}', String(errors.length))}</div>
         </div>
       )}
     </div>

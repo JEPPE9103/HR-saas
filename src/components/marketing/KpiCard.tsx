@@ -23,10 +23,10 @@ export function KpiCard({ title, value, icon, tone = "neutral" }: {
     danger:  "bg-[var(--danger-soft-bg)]/20",
   };
   const iconBg: Record<Tone, string> = {
-    neutral: "bg-slate-500/20",
-    success: "bg-emerald-500/20",
-    warning: "bg-amber-500/20",
-    danger:  "bg-rose-500/20",
+    neutral: "bg-[var(--neutral-soft-bg)]",
+    success: "bg-[var(--success-soft-bg)]",
+    warning: "bg-[var(--warning-soft-bg)]",
+    danger:  "bg-[var(--danger-soft-bg)]",
   };
 
   return (

@@ -30,8 +30,8 @@ export default function InsightCard({ i, onSimulate, onExport }:{
       </div>
       {i.recommendation && <p className="mt-3 text-sm">{i.recommendation}</p>}
       <div className="mt-3 flex items-center gap-2">
-        <button onClick={()=>onSimulate(i.id)} className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-slate-50 border-[var(--ring)]">{t("common.simulate")}</button>
-        <button onClick={()=>onExport(i.id)} className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-slate-50 border-[var(--ring)]">{t("common.export")}</button>
+        <button onClick={()=>onSimulate(i.id)} className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-[var(--neutral-soft-bg)] border-[var(--ring)]">{t("common.simulate")}</button>
+        <button onClick={()=>onExport(i.id)} className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-[var(--neutral-soft-bg)] border-[var(--ring)]">{t("common.export")}</button>
       </div>
     </div>
   );
