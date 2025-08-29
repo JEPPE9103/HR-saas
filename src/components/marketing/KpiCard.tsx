@@ -30,7 +30,7 @@ export function KpiCard({ title, value, icon, tone = "neutral" }: {
   };
 
   return (
-    <div className={`rounded-2xl border p-4 shadow-md hover:shadow-lg transition ${toneRing[tone]} border-[var(--ring)] ${toneBg[tone]}`}>
+    <div className={`rounded-2xl border p-4 shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-1 ${toneRing[tone]} border-[var(--ring)] ${toneBg[tone]}`}>
       <div className="flex items-center gap-3">
         <div className={`h-9 w-9 rounded-xl ${iconBg[tone]} flex items-center justify-center`}>{icon}</div>
         <div className="text-xs subtle">{title}</div>
