@@ -2,14 +2,13 @@
 
 import { useI18n } from "@/providers/I18nProvider";
 import { MarketingFeatureCard } from "@/components/marketing/FeatureCard";
-import { TrustLogos } from "@/components/marketing/TrustLogos";
 import { FinalCtaSection } from "@/components/marketing/FinalCtaSection";
 import EnterpriseHeroChart from "@/components/hero/EnterpriseHeroChart";
 import EnterpriseKpiCard from "@/components/marketing/EnterpriseKpiCard";
-import TrustRow from "@/components/marketing/TrustRow";
+import { TrustLogos } from "@/components/marketing/TrustLogos";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { ArrowRight, Bot, ShieldCheck, BarChart3, FileSpreadsheet, Users, Lock, CheckCircle, Award, Zap } from "lucide-react";
+import { ArrowRight, Bot, ShieldCheck, BarChart3, FileSpreadsheet, Users, Lock, CheckCircle, Award, Zap, Check } from "lucide-react";
 import { useState } from "react";
 
 export default function HomePage() {
@@ -42,11 +41,14 @@ export default function HomePage() {
 
           {/* Headline */}
           <div>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl mb-6">
+            <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl lg:text-7xl mb-6">
               <span className="text-[var(--text)]">{t("hero.title").split('.')[0]}.</span>{" "}
-              <span className="text-[var(--accent)]">{t("hero.title").split('.')[1]}</span>
+              <span className="text-[var(--text)] relative">
+                {t("hero.title").split('.')[1]}
+                <span className="absolute bottom-0 left-0 w-full h-1 bg-[var(--accent)] rounded-full"></span>
+              </span>
             </h1>
-            <p className="text-lg text-[var(--text-muted)] max-w-lg">
+            <p className="text-xl text-[var(--text-muted)] max-w-lg">
               {t("hero.subtitle")}
             </p>
           </div>
@@ -60,9 +62,9 @@ export default function HomePage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="flex-1 text-base py-3"
+                className="flex-1 text-base py-4"
               />
-              <Button type="submit" className="whitespace-nowrap py-3 px-6 text-base font-medium">
+              <Button type="submit" className="whitespace-nowrap py-4 px-8 text-base font-medium bg-[var(--accent)] hover:bg-[var(--accent-strong)]">
                 {t("cta.getStarted")} <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </form>
@@ -74,7 +76,8 @@ export default function HomePage() {
               >
                 {t("cta.tryDemo")}
               </a>
-              <span className="text-sm text-[var(--text-muted)]">
+              <span className="text-sm text-[var(--text-muted)] flex items-center gap-1">
+                <Check className="h-3 w-3" />
                 {t("hero.noCreditCard")}
               </span>
             </div>
@@ -87,11 +90,13 @@ export default function HomePage() {
               value="5.6%" 
               icon="trending" 
               isHighlighted={true}
+              yoyDelta={-0.8}
             />
             <EnterpriseKpiCard 
               title={t("metrics.sitesWithRisk")} 
               value="2" 
               icon="shield" 
+              yoyDelta={-1}
             />
             <EnterpriseKpiCard 
               title={t("metrics.timeToExport")} 
@@ -107,14 +112,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trust Row */}
-      <TrustRow />
-
-      {/* TRUST LOGOS */}
+      {/* Trust Logos */}
       <TrustLogos />
 
+      {/* Divider */}
+      <div className="h-px bg-[var(--ring)] opacity-30 my-16"></div>
+
       {/* HOW IT WORKS */}
-      <section className="mt-24 mb-24">
+      <section className="mt-24 mb-24 bg-white rounded-3xl p-12">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-[var(--text)] mb-4">{t('home.howItWorks')}</h2>
           <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
@@ -134,8 +139,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Divider */}
+      <div className="h-px bg-[var(--ring)] opacity-30 my-16"></div>
+
       {/* TRUST & COMPLIANCE */}
-      <section className="mt-24 mb-24">
+      <section className="mt-24 mb-24 bg-white rounded-3xl p-12">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[var(--text)] mb-4">{t('home.trust.title')}</h2>
           <p className="text-lg text-[var(--text-muted)]">{t('home.trust.subtitle')}</p>
@@ -171,6 +179,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Divider */}
+      <div className="h-px bg-[var(--ring)] opacity-30 my-16"></div>
 
       {/* STRONG CTA SECTION */}
       <section className="mt-24 rounded-3xl border p-12 text-center border-[var(--ring)] bg-[var(--card)] hover:shadow-lg transition-all duration-200 hover:-translate-y-1">

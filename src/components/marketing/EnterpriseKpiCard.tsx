@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { TrendingDown, ShieldAlert, Clock } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from "recharts";
+import { useI18n } from "@/providers/I18nProvider";
 
 interface EnterpriseKpiCardProps {
   title: string;
   value: string;
   icon: "trending" | "shield" | "clock";
   isHighlighted?: boolean;
+  yoyDelta?: number;
   sparklineData?: Array<{ value: number }>;
 }
 
@@ -23,8 +25,10 @@ export default function EnterpriseKpiCard({
   value, 
   icon, 
   isHighlighted = false,
+  yoyDelta,
   sparklineData 
 }: EnterpriseKpiCardProps) {
+  const { t } = useI18n();
   const [displayValue, setDisplayValue] = useState("0");
   const IconComponent = icons[icon];
 
@@ -61,42 +65,57 @@ export default function EnterpriseKpiCard({
   }, [value]);
 
   return (
-    <div className={`p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] border border-[var(--ring)] bg-[var(--card)] ${
+    <div className={`p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] border border-[var(--ring)] bg-[var(--card)] ${
       isHighlighted ? 'ring-1 ring-[var(--accent)]' : ''
     }`}>
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-2 mb-3">
         <div className={`p-2 rounded-lg ${
           isHighlighted ? 'bg-[var(--accent)] text-white' : 'bg-[var(--neutral-soft-bg)] text-[var(--text-muted)]'
         }`}>
           <IconComponent className="h-4 w-4" />
         </div>
-        <div className="text-sm font-medium text-[var(--text-muted)]">{title}</div>
+        <div className="text-xs font-medium text-[var(--text-muted)]">{title}</div>
       </div>
       
-      <div className="flex items-end justify-between">
-        <div className={`text-2xl font-bold text-[var(--text)] ${
-          isHighlighted ? 'text-[var(--accent)]' : ''
-        }`}>
-          {displayValue}
+      <div className="space-y-2">
+        <div className="flex items-end justify-between">
+          <div className={`font-bold text-[var(--text)] ${
+            isHighlighted ? 'text-2xl' : 'text-xl'
+          }`}>
+            {displayValue}
+          </div>
+          
+          {/* Sparkline */}
+          <div className="w-12 h-6">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={sparkline}>
+                <XAxis dataKey="name" hide />
+                <YAxis hide />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke={isHighlighted ? "var(--accent)" : "var(--text-muted)"} 
+                  strokeWidth={1.5} 
+                  dot={false}
+                  strokeOpacity={0.6}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
         
-        {/* Sparkline */}
-        <div className="w-12 h-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sparkline}>
-              <XAxis dataKey="name" hide />
-              <YAxis hide />
-              <Line 
-                type="monotone" 
-                dataKey="value" 
-                stroke={isHighlighted ? "var(--accent)" : "var(--text-muted)"} 
-                strokeWidth={2} 
-                dot={false}
-                strokeOpacity={0.6}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        {/* YoY Delta */}
+        {yoyDelta !== undefined && (
+          <div className={`text-xs font-medium ${
+            yoyDelta > 0 
+              ? 'text-[var(--success)]' 
+              : yoyDelta < 0 
+                ? 'text-[var(--danger)]' 
+                : 'text-[var(--text-muted)]'
+          }`}>
+            {yoyDelta > 0 ? '+' : ''}{yoyDelta.toFixed(1)} {t("common.pp")} {t("common.yoy")}
+          </div>
+        )}
       </div>
     </div>
   );
