@@ -119,7 +119,7 @@ export default function HomePage() {
       <div className="h-px bg-[var(--ring)] opacity-30 my-16"></div>
 
       {/* HOW IT WORKS */}
-      <section className="mt-24 mb-24 bg-white rounded-3xl p-12">
+      <section className="mt-24 mb-24 bg-[var(--card)] rounded-3xl p-12 border border-[var(--ring)]">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-[var(--text)] mb-4">{t('home.howItWorks')}</h2>
           <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
@@ -143,7 +143,7 @@ export default function HomePage() {
       <div className="h-px bg-[var(--ring)] opacity-30 my-16"></div>
 
       {/* TRUST & COMPLIANCE */}
-      <section className="mt-24 mb-24 bg-white rounded-3xl p-12">
+      <section className="mt-24 mb-24 bg-[var(--card)] rounded-3xl p-12 border border-[var(--ring)]">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-[var(--text)] mb-4">{t('home.trust.title')}</h2>
           <p className="text-lg text-[var(--text-muted)]">{t('home.trust.subtitle')}</p>

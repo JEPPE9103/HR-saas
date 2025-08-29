@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingDown, ShieldAlert, Clock } from "lucide-react";
+import { Percent, ShieldAlert, Clock } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from "recharts";
 import { useI18n } from "@/providers/I18nProvider";
 
@@ -15,7 +15,7 @@ interface EnterpriseKpiCardProps {
 }
 
 const icons = {
-  trending: TrendingDown,
+  trending: Percent,
   shield: ShieldAlert,
   clock: Clock,
 };
@@ -65,14 +65,14 @@ export default function EnterpriseKpiCard({
   }, [value]);
 
   return (
-    <div className={`p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] border border-[var(--ring)] bg-[var(--card)] ${
+    <div className={`p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] border border-[var(--ring)] bg-[var(--card)] group ${
       isHighlighted ? 'ring-1 ring-[var(--accent)]' : ''
     }`}>
-      <div className="flex items-center gap-2 mb-3">
-        <div className={`p-2 rounded-lg ${
-          isHighlighted ? 'bg-[var(--accent)] text-white' : 'bg-[var(--neutral-soft-bg)] text-[var(--text-muted)]'
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`p-1 rounded-full transition-colors ${
+          isHighlighted ? 'bg-[var(--accent)] text-white' : 'bg-[var(--accent-soft-bg)] text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-white'
         }`}>
-          <IconComponent className="h-4 w-4" />
+          <IconComponent className="h-5 w-5" />
         </div>
         <div className="text-xs font-medium text-[var(--text-muted)]">{title}</div>
       </div>
