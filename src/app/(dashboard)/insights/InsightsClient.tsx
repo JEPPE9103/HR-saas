@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InsightCard, { Insight } from "@/components/insights/InsightCard";
 import SeverityBadge from "@/components/insights/SeverityBadge";
-import { Bot, FileDown, Filter, TrendingUp } from "lucide-react";
+import { FileDown, Filter, TrendingUp } from "lucide-react";
 import { firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { getDocs, query, where } from "firebase/firestore";
 import { insightsRef, metricsRef } from "@/lib/models";
@@ -157,9 +157,6 @@ export default function InsightsClient(){
           >
             <TrendingUp className="h-4 w-4" /> Simulate adjustments
           </button>
-          <a href="/dashboard?open=copilot" className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-3 py-1.5 text-white hover:bg-[var(--accent-strong)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
-            <Bot className="h-4 w-4" /> {t("insights.askCopilot")}
-          </a>
         </div>
       </div>
 
