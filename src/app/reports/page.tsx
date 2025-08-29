@@ -228,15 +228,14 @@ export default function ReportsPage() {
                           <p className="text-xs text-[var(--text-muted)]">{r.date}</p>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Button variant="ghost" className="h-8 w-8 p-0">
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Button variant="ghost" className="h-8 w-8 p-0">
                             <Download className="h-4 w-4" />
                           </Button>
                           <Button 
                             variant="ghost" 
-                            size="sm" 
                             className="h-8 w-8 p-0 text-[var(--danger)] hover:text-[var(--danger-strong)]"
                             onClick={() => removeReport(r.id)}
                           >
@@ -263,13 +262,13 @@ export default function ReportsPage() {
               {blockLibrary.map((block) => {
                 const IconComponent = block.icon;
                 return (
-                  <motion.div
+                  <div
                     key={block.type}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, block.type)}
                     className={`group cursor-grab active:cursor-grabbing rounded-xl border border-[var(--ring)] p-4 bg-[var(--panel)] hover:bg-[var(--neutral-soft-bg)] hover:shadow-md transition-all duration-200 ${
                       isDragging ? 'opacity-50' : ''
                     }`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, block.type)}
                     onClick={() => add(block.type, block.title)}
                   >
                     <div className="flex items-start gap-3">
@@ -282,7 +281,7 @@ export default function ReportsPage() {
                       </div>
                       <PlusCircle className="h-4 w-4 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </CardContent>
@@ -300,8 +299,7 @@ export default function ReportsPage() {
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button 
-                    variant="outline" 
-                    size="sm"
+                    variant="secondary" 
                     onClick={saveCurrent}
                     className="border-[var(--ring)] text-[var(--text)] hover:bg-[var(--neutral-soft-bg)]"
                   >
@@ -309,16 +307,14 @@ export default function ReportsPage() {
                     {t("common.save")}
                   </Button>
                   <Button 
-                    variant="outline" 
-                    size="sm"
+                    variant="secondary" 
                     className="border-[var(--ring)] text-[var(--text)] hover:bg-[var(--neutral-soft-bg)]"
                   >
                     <Eye className="h-4 w-4 mr-2" />
                     {t("common.view")}
                   </Button>
                   <Button 
-                    variant="outline" 
-                    size="sm"
+                    variant="secondary" 
                     onClick={async()=>{ 
                       const url = await exportCsv("demo-se"); 
                       const a=document.createElement("a"); 
@@ -401,7 +397,6 @@ export default function ReportsPage() {
                             </div>
                             <Button 
                               variant="ghost" 
-                              size="sm"
                               onClick={() => removeBlock(b.id)}
                               className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--danger)] hover:text-[var(--danger-strong)]"
                             >
@@ -485,7 +480,7 @@ export default function ReportsPage() {
                       Apply Suggestion
                     </Button>
                     <Button 
-                      variant="outline" 
+                      variant="secondary" 
                       onClick={nextSuggestion}
                       className="border-[var(--ring)] text-[var(--text)] hover:bg-[var(--neutral-soft-bg)]"
                     >
