@@ -6,6 +6,7 @@ import { useSimulationDrawer } from "@/store/ui";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { TrendingUp, Zap, Target } from "lucide-react";
 
 export function SimulationDrawer() {
   const { open, setOpen, defaults, setResultText, setResult, setResultOpen } = useSimulationDrawer();
@@ -13,7 +14,31 @@ export function SimulationDrawer() {
   const datasetId = sp.get("datasetId") || "demo-se";
   const [role, setRole] = useState(defaults?.role ?? "Engineer");
   const [percent, setPercent] = useState(defaults?.percent ?? 5);
-  // local result state replaced by global resultText/result
+  
+  // Preset scenarios for quick access
+  const presetScenarios = [
+    {
+      name: "Engineering Gap Fix",
+      description: "+3% adjustment for Software Engineers",
+      role: "Software Engineer",
+      percent: 3,
+      icon: <TrendingUp className="h-4 w-4" />
+    },
+    {
+      name: "Leadership Boost",
+      description: "+5% adjustment for Project Managers",
+      role: "Project Manager", 
+      percent: 5,
+      icon: <Target className="h-4 w-4" />
+    },
+    {
+      name: "Sales Team Adjustment",
+      description: "+4% adjustment for Sales Executives",
+      role: "Sales Executive",
+      percent: 4,
+      icon: <Zap className="h-4 w-4" />
+    }
+  ];
 
   async function run() {
     const res = await fetch("/api/copilot/ask", {
@@ -31,6 +56,11 @@ export function SimulationDrawer() {
     setResultOpen(true);
   }
 
+  function applyPreset(preset: typeof presetScenarios[0]) {
+    setRole(preset.role);
+    setPercent(preset.percent);
+  }
+
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40">
@@ -40,12 +70,36 @@ export function SimulationDrawer() {
           <h2 className="text-base font-semibold text-[var(--text)]">Simulation</h2>
           <Button variant="ghost" onClick={() => setOpen(false)}>Close</Button>
         </div>
-        <div className="grid gap-3">
-          <label className="text-sm subtle">Role</label>
-          <Input value={role} onChange={(e) => setRole(e.target.value)} />
-          <label className="text-sm subtle">Percentage</label>
-          <Input type="number" value={percent} onChange={(e) => setPercent(Number(e.target.value))} />
-          <Button onClick={run}>Run</Button>
+        
+        {/* Preset Scenarios */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-[var(--text)]">Quick Scenarios</h3>
+          <div className="grid gap-2">
+            {presetScenarios.map((preset, index) => (
+              <button
+                key={index}
+                onClick={() => applyPreset(preset)}
+                className="flex items-center gap-3 p-3 rounded-lg border border-[var(--ring)] bg-[var(--panel)] hover:bg-[var(--neutral-soft-bg)] transition text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+              >
+                <div className="text-[var(--accent)]">{preset.icon}</div>
+                <div>
+                  <div className="text-sm font-medium text-[var(--text)]">{preset.name}</div>
+                  <div className="text-xs text-[var(--text-muted)]">{preset.description}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-[var(--ring)] pt-3">
+          <h3 className="text-sm font-medium text-[var(--text)] mb-3">Custom Simulation</h3>
+          <div className="grid gap-3">
+            <label className="text-sm text-[var(--text-muted)]">Role</label>
+            <Input value={role} onChange={(e) => setRole(e.target.value)} />
+            <label className="text-sm text-[var(--text-muted)]">Percentage</label>
+            <Input type="number" value={percent} onChange={(e) => setPercent(Number(e.target.value))} />
+            <Button onClick={run} className="bg-[var(--accent)] hover:bg-[var(--accent-strong)] text-white">Run Simulation</Button>
+          </div>
         </div>
         {/* Result text rendered in sticky bar / result panel */}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Upload, FileDown, RotateCcw } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Upload, FileDown, RotateCcw, Bot } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import RiskPanel from "@/components/dashboard/RiskPanel";
@@ -9,7 +9,9 @@ import ActionQueue from "@/components/dashboard/ActionQueue";
 import { SimulationDrawer } from "@/components/SimulationDrawer";
 import SimulationStickyBar from "@/components/SimulationStickyBar";
 import SimulationResultPanel from "@/components/SimulationResultPanel";
+import { CopilotPanel } from "@/components/copilot/CopilotPanel";
 import { useI18n } from "@/providers/I18nProvider";
+import { useAppStore } from "@/store/app";
 
 const kpis = [
   { label: "Gender pay gap", value: 5.6, delta: -0.8, suffix: "%" },
@@ -45,6 +47,7 @@ export default function DashboardClient(){
   const router = useRouter();
   const datasetId = sp.get("datasetId") || "demo-se";
   const [computedAt, setComputedAt] = useState<string>("23 Aug 2026");
+  const setCopilotOpen = useAppStore((s) => s.setCopilotOpen);
 
   return (
     <div className="px-6 lg:px-10 py-6 space-y-6">
@@ -61,7 +64,13 @@ export default function DashboardClient(){
           <select aria-label="Select dataset" value={datasetId} onChange={(e)=>{ const v=e.target.value; router.push(`/dashboard?datasetId=${encodeURIComponent(v)}`); }} className="rounded-lg border px-3 py-2 text-[var(--text)] border-[var(--ring)] bg-[var(--panel)]">
             {['demo-se','demo-de','demo-uk'].map(ds => (<option key={ds} value={ds}>{ds}</option>))}
           </select>
-          <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 hover:bg-slate-50 border-[var(--ring)] text-[var(--text)]">
+          <button 
+            onClick={() => setCopilotOpen(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-4 py-2 text-white hover:bg-[var(--accent-strong)] transition font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+          >
+            <Bot className="h-4 w-4" /> Ask Copilot about this dataset
+          </button>
+          <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 hover:bg-[var(--neutral-soft-bg)] border-[var(--ring)] text-[var(--text)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
             <Upload className="h-4 w-4" /> {t("dashboard.uploadData")}
           </button>
         </div>
@@ -140,6 +149,7 @@ export default function DashboardClient(){
       <SimulationDrawer />
       <SimulationStickyBar />
       <SimulationResultPanel />
+      <CopilotPanel datasetId={datasetId} />
     </div>
   );
 }

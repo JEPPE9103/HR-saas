@@ -4,11 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InsightCard, { Insight } from "@/components/insights/InsightCard";
 import SeverityBadge from "@/components/insights/SeverityBadge";
-import { Bot, FileDown, Filter } from "lucide-react";
+import { Bot, FileDown, Filter, TrendingUp } from "lucide-react";
 import { firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { getDocs, query, where } from "firebase/firestore";
 import { insightsRef, metricsRef } from "@/lib/models";
 import { useI18n } from "@/providers/I18nProvider";
+import { useSimulationDrawer } from "@/store/ui";
+import { SimulationDrawer } from "@/components/SimulationDrawer";
+import { CopilotPanel } from "@/components/copilot/CopilotPanel";
 
 const SAMPLE_KEYS = [
   { id:"1", severity:"High",   t:{ title:"insights.sample1.title", subtitle:"insights.sample1.subtitle", rec:"insights.sample1.rec" } },
@@ -49,6 +52,7 @@ export default function InsightsClient(){
   const [isSample, setIsSample] = useState(true);
   const sp = useSearchParams();
   const datasetId = sp.get("datasetId") || "demo-se";
+  const setSimulationOpen = useSimulationDrawer((s) => s.setOpen);
 
   useEffect(()=>{
     let mounted = true;
@@ -144,10 +148,16 @@ export default function InsightsClient(){
           <p className="text-sm text-muted-foreground">{t("insights.subtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 hover:bg-slate-50 border-[var(--ring)]">
+          <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 hover:bg-[var(--neutral-soft-bg)] border-[var(--ring)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
             <FileDown className="h-4 w-4"/> {t("insights.exportBrief")}
           </button>
-          <a href="/dashboard?open=copilot" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-1.5 text-white hover:bg-indigo-700">
+          <button 
+            onClick={() => setSimulationOpen(true)}
+            className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-[var(--text)] hover:bg-[var(--neutral-soft-bg)] border-[var(--ring)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+          >
+            <TrendingUp className="h-4 w-4" /> Simulate adjustments
+          </button>
+          <a href="/dashboard?open=copilot" className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-3 py-1.5 text-white hover:bg-[var(--accent-strong)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
             <Bot className="h-4 w-4" /> {t("insights.askCopilot")}
           </a>
         </div>
@@ -227,6 +237,8 @@ export default function InsightsClient(){
           </table>
         </div>
       </div>
+      <SimulationDrawer />
+      <CopilotPanel datasetId={datasetId} />
     </div>
   );
 }
