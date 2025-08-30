@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { BarChart3, List } from "lucide-react";
+import { BarChart3, List, ChevronDown } from "lucide-react";
 import { useI18n } from "@/providers/I18nProvider";
 
 const data = [
@@ -35,6 +35,9 @@ const getSeverityPillColor = (severity: string) => {
 export default function ExecutiveRiskPanel() {
   const { t } = useI18n();
   const [mode, setMode] = useState<'bars' | 'list'>('bars');
+  const [showAll, setShowAll] = useState(false);
+
+  const displayData = showAll ? data : data.slice(0, 5);
 
   return (
     <div className="h-full p-6 bg-[var(--card)] rounded-2xl shadow-md border border-[var(--ring)]">
@@ -42,7 +45,9 @@ export default function ExecutiveRiskPanel() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-[var(--text)]">{t("dashboard.riskPanel.title")}</h3>
-          <p className="text-sm text-[var(--text-muted)]">{t("dashboard.riskPanel.subtitle")}</p>
+          <p className="text-sm text-[var(--text-muted)]">
+            {showAll ? `${data.length} highest gaps` : `Top 5 highest gaps`}
+          </p>
         </div>
         
         {/* Toggle */}
@@ -72,72 +77,74 @@ export default function ExecutiveRiskPanel() {
 
       {/* Content */}
       {mode === 'bars' ? (
-        <div className="h-64 overflow-y-auto">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart 
-              data={data} 
-              margin={{ top: 10, right: 40, left: 0, bottom: 0 }}
-              barGap={12}
-            >
-              <CartesianGrid 
-                horizontal 
-                stroke="var(--ring)" 
-                strokeOpacity={0.2} 
-                strokeDasharray="3 3" 
-              />
-              <XAxis 
-                dataKey="dept" 
-                tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
-                axisLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
-                tickLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
-                textAnchor="start"
-                angle={0}
-                dx={0}
-                dy={8}
-              />
-              <YAxis 
-                domain={[0, 12]}
-                tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
-                axisLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
-                tickLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
-              />
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: 'var(--card)',
-                  border: '1px solid var(--ring)',
-                  borderRadius: '8px',
-                  color: 'var(--text)',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                }}
-                formatter={(value: any) => [`${value}%`, t("common.gap")]}
-                labelFormatter={(label) => label}
-              />
-              <Bar 
-                dataKey="gap" 
-                fill="var(--accent)" 
-                radius={[2, 2, 0, 0]}
-                barSize={6}
-                className="hover:opacity-80 transition-opacity"
+        <div className="space-y-4">
+          <div className="h-48">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart 
+                data={displayData} 
+                margin={{ top: 10, right: 40, left: 0, bottom: 0 }}
+                barGap={12}
               >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getSeverityColor(entry.severity)} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                <CartesianGrid 
+                  horizontal 
+                  stroke="var(--ring)" 
+                  strokeOpacity={0.2} 
+                  strokeDasharray="3 3" 
+                />
+                <XAxis 
+                  dataKey="dept" 
+                  tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
+                  axisLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
+                  tickLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
+                  textAnchor="start"
+                  angle={0}
+                  dx={0}
+                  dy={8}
+                />
+                <YAxis 
+                  domain={[0, 12]}
+                  tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
+                  axisLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
+                  tickLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
+                />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: 'var(--card)',
+                    border: '1px solid var(--ring)',
+                    borderRadius: '8px',
+                    color: 'var(--text)',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                  formatter={(value: any) => [`${value}%`, t("common.gap")]}
+                  labelFormatter={(label) => label}
+                />
+                <Bar 
+                  dataKey="gap" 
+                  fill="var(--accent)" 
+                  radius={[2, 2, 0, 0]}
+                  barSize={6}
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  {displayData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={getSeverityColor(entry.severity)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
           
           {/* Value labels */}
-          <div className="flex justify-between mt-3 px-1">
-            {data.map((item, index) => (
-              <div key={index} className="text-xs font-medium text-[var(--text)] text-center" style={{ width: '16.66%' }}>
+          <div className="flex justify-between px-1">
+            {displayData.map((item, index) => (
+              <div key={index} className="text-xs font-medium text-[var(--text)] text-center" style={{ width: `${100 / displayData.length}%` }}>
                 {item.gap}%
               </div>
             ))}
           </div>
         </div>
       ) : (
-        <div className="h-64 overflow-y-auto space-y-2">
-          {data.map((item, index) => (
+        <div className="space-y-2">
+          {displayData.map((item, index) => (
             <div 
               key={index} 
               className="flex items-center justify-between p-3 rounded-lg border border-[var(--ring)] bg-[var(--panel)] hover:bg-[var(--neutral-soft-bg)] transition-colors duration-200 cursor-pointer group"
@@ -162,6 +169,30 @@ export default function ExecutiveRiskPanel() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* View All Button */}
+      {!showAll && data.length > 5 && (
+        <div className="mt-4 pt-4 border-t border-[var(--ring)]">
+          <button
+            onClick={() => setShowAll(true)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-strong)] hover:bg-[var(--accent-soft-bg)] rounded-lg transition-all duration-200"
+          >
+            View all {data.length} departments
+            <ChevronDown className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
+      {showAll && (
+        <div className="mt-4 pt-4 border-t border-[var(--ring)]">
+          <button
+            onClick={() => setShowAll(false)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--neutral-soft-bg)] rounded-lg transition-all duration-200"
+          >
+            Show top 5 only
+          </button>
         </div>
       )}
     </div>

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InsightCard, { Insight } from "@/components/insights/InsightCard";
 import SeverityBadge from "@/components/insights/SeverityBadge";
-import { FileDown, Filter, TrendingUp } from "lucide-react";
+import { FileDown, Filter, TrendingUp, AlertTriangle, Users, Clock, TrendingDown, FileSpreadsheet, UploadCloud } from "lucide-react";
 import { firebaseDb as dbFactory } from "@/lib/firebase/client";
 import { getDocs, query, where } from "firebase/firestore";
 import { insightsRef, metricsRef } from "@/lib/models";
@@ -12,6 +12,9 @@ import { useI18n } from "@/providers/I18nProvider";
 import { useSimulationDrawer } from "@/store/ui";
 import { SimulationDrawer } from "@/components/SimulationDrawer";
 import { CopilotPanel } from "@/components/copilot/CopilotPanel";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis } from "recharts";
 
 const SAMPLE_KEYS = [
   { id:"1", severity:"High",   t:{ title:"insights.sample1.title", subtitle:"insights.sample1.subtitle", rec:"insights.sample1.rec" } },
@@ -132,6 +135,22 @@ export default function InsightsClient(){
       .filter(r => r.role.toLowerCase().includes(queryText.toLowerCase()));
   }, [tableData, severity, queryText]);
 
+  // Calculate summary stats
+  const summaryStats = useMemo(() => {
+    const highRisk = tableData.filter(r => r.severity === "High").length;
+    const avgGap = tableData.reduce((sum, r) => sum + r.gap, 0) / tableData.length;
+    return { highRisk, avgGap: avgGap.toFixed(1) };
+  }, [tableData]);
+
+  // Count insights by severity
+  const severityCounts = useMemo(() => {
+    const counts = { All: feedData.length, High: 0, Medium: 0, Low: 0 };
+    feedData.forEach(item => {
+      counts[item.severity as keyof typeof counts]++;
+    });
+    return counts;
+  }, [feedData]);
+
   function simulate(id:string){ /* open modal, pass id */ }
   function exportOne(id:string){
     const a = document.createElement("a");
@@ -141,99 +160,192 @@ export default function InsightsClient(){
   }
 
   return (
-    <div className="px-6 lg:px-10 py-6 space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mx-auto w-full max-w-7xl px-6 py-8 space-y-8">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("nav.insights")}</h1>
-          <p className="text-sm text-muted-foreground">{t("insights.subtitle")}</p>
+          <h1 className="text-3xl font-bold tracking-tight text-[var(--text)] mb-2">{t("nav.insights")}</h1>
+          <p className="text-lg text-[var(--text-muted)]">{t("insights.subtitle")}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 hover:bg-[var(--neutral-soft-bg)] border-[var(--ring)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" className="flex items-center gap-2">
             <FileDown className="h-4 w-4"/> {t("insights.exportBrief")}
-          </button>
-          <button 
+          </Button>
+          <Button 
             onClick={() => setSimulationOpen(true)}
-            className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-[var(--text)] hover:bg-[var(--neutral-soft-bg)] border-[var(--ring)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            className="flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-strong)] text-white"
           >
             <TrendingUp className="h-4 w-4" /> Simulate adjustments
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div className="rounded-2xl border p-3 shadow-lg border-[var(--ring)] bg-[var(--panel)]">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-sm border-[var(--ring)]"><Filter className="h-4 w-4"/> {t("insights.filters")}</div>
-          <div className="flex items-center gap-1">
-            {["All","High","Medium","Low"].map(s=> (
-              <button key={s}
-                onClick={()=>setSeverity(s as any)}
-                className={`rounded-full px-3 py-1 text-sm ring-1 transition ${
-                  severity===s ? "bg-indigo-600 text-white ring-indigo-600" : "text-[var(--text)] ring-[var(--ring)] hover:bg-slate-50"
-                }`}>{t(`severity.${s}`)}</button>
-            ))}
-          </div>
-          <div className="ml-auto">
-            <input value={queryText} onChange={e=>setQueryText(e.target.value)} placeholder={t("insights.searchPlaceholder")}
-              className="rounded-lg border px-3 py-1.5 text-sm border-[var(--ring)] bg-[var(--panel)] text-[var(--text)]"/>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-        {loading && (
-          <div className="col-span-full text-sm text-muted-foreground">{t("insights.loading")}</div>
-        )}
-        {!loading && feed.map(i=> (
-          <InsightCard key={i.id} i={i} onSimulate={simulate} onExport={exportOne} />
-        ))}
-        {feed.length===0 && (
-          <div className="col-span-full flex items-center justify-center py-12">
-            <div className="rounded-xl border p-8 text-center border-[var(--ring)] bg-[var(--panel)] max-w-md">
-              <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-lg font-medium text-[var(--text)] mb-2">No insights found</h3>
-              <p className="text-sm text-[var(--text-muted)]">
-                {t("insights.empty")}
-              </p>
+      {/* Summary Banner */}
+      <Card className="rounded-2xl shadow-sm border-[var(--ring)] bg-[var(--card)]">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-[var(--danger-soft-bg)] text-[var(--danger)]">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-[var(--text)]">{summaryStats.highRisk}</div>
+                <div className="text-sm text-[var(--text-muted)]">High-risk roles detected</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-[var(--accent-soft-bg)] text-[var(--accent)]">
+                <TrendingDown className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-[var(--text)]">{summaryStats.avgGap}%</div>
+                <div className="text-sm text-[var(--text-muted)]">Average pay gap</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-[var(--success-soft-bg)] text-[var(--success)]">
+                <Clock className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-[var(--text)]">Aug 2026</div>
+                <div className="text-sm text-[var(--text-muted)]">Last updated</div>
+              </div>
             </div>
           </div>
-        )}
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="rounded-2xl border p-4 shadow-lg border-[var(--ring)] bg-[var(--panel)]">
-        <div className="mb-3 text-sm text-muted-foreground">{t("insights.topGaps")}</div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="text-left text-slate-500">
-              <tr>
-                <th className="py-2">{t("insights.th.role")}</th>
-                <th className="py-2">{t("insights.th.gap")}</th>
-                <th className="py-2">{t("insights.th.n")} <span className="text-xs text-slate-400">({t("insights.groupSizeHint")})</span></th>
-                <th className="py-2">{t("insights.th.severity")}</th>
-                <th className="py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(r => (
-                <tr key={r.role} className="border-t last:border-b border-[var(--ring)]">
-                  <td className="py-2">{r.role}</td>
-                  <td className="py-2">{r.gap.toFixed(1)}%</td>
-                  <td className="py-2">{r.n}</td>
-                  <td className="py-2"><SeverityBadge level={r.severity} /></td>
-                  <td className="py-2">
-                    <div className="flex gap-2">
-                      <button className="rounded-md border px-2 py-1 hover:bg-slate-50 border-[var(--ring)]">{t("common.simulate")}</button>
-                      <button className="rounded-md border px-2 py-1 hover:bg-slate-50 border-[var(--ring)]">{t("common.addToReport")}</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {rows.length===0 && (
-                <tr><td colSpan={5} className="py-6 text-center text-muted-foreground">{t("insights.noRows")}</td></tr>
-              )}
-            </tbody>
-          </table>
+      {/* Filters */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-[var(--text-muted)]" />
+          <span className="text-sm font-medium text-[var(--text)]">Filter insights</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          {(["All", "High", "Medium", "Low"] as const).map(s => {
+            const count = severityCounts[s];
+            const colors = {
+              All: "bg-[var(--neutral-soft-bg)] text-[var(--text-muted)] border-[var(--ring)]",
+              High: "bg-[var(--danger-soft-bg)] text-[var(--danger)] border-[var(--danger-soft-ring)]",
+              Medium: "bg-[var(--warning-soft-bg)] text-[var(--warning)] border-[var(--warning-soft-ring)]",
+              Low: "bg-[var(--success-soft-bg)] text-[var(--success)] border-[var(--success-soft-ring)]"
+            };
+            return (
+              <button
+                key={s}
+                onClick={() => setSeverity(s)}
+                className={`rounded-full px-4 py-2 text-sm font-medium border transition-all ${
+                  severity === s 
+                    ? "ring-2 ring-[var(--accent)] ring-offset-2" 
+                    : "hover:scale-105"
+                } ${colors[s]}`}
+              >
+                {t(`severity.${s}`)} ({count})
+              </button>
+            );
+          })}
+          <div className="ml-auto">
+            <input 
+              value={queryText} 
+              onChange={e => setQueryText(e.target.value)} 
+              placeholder={t("insights.searchPlaceholder")}
+              className="rounded-xl border px-4 py-2 text-sm border-[var(--ring)] bg-[var(--card)] text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+            />
+          </div>
         </div>
       </div>
+
+      {/* Main Content - Two Column Layout */}
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Left Column - Insight Cards */}
+        <div className="lg:col-span-2 space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold text-[var(--text)] mb-4">AI-Powered Insights</h2>
+            {loading && (
+              <div className="text-sm text-[var(--text-muted)]">{t("insights.loading")}</div>
+            )}
+            {!loading && feed.length > 0 && (
+              <div className="grid gap-4 md:grid-cols-2">
+                {feed.map(i => (
+                  <InsightCard key={i.id} i={i} onSimulate={simulate} onExport={exportOne} />
+                ))}
+              </div>
+            )}
+            {!loading && feed.length === 0 && (
+              <div className="flex items-center justify-center py-12">
+                <div className="rounded-2xl border p-8 text-center border-[var(--ring)] bg-[var(--card)] max-w-md">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--neutral-soft-bg)] flex items-center justify-center">
+                    <FileSpreadsheet className="h-8 w-8 text-[var(--text-muted)]" />
+                  </div>
+                  <h3 className="text-lg font-medium text-[var(--text)] mb-2">No insights yet</h3>
+                  <p className="text-sm text-[var(--text-muted)] mb-4">
+                    Upload your compensation data to get AI-powered insights and recommendations
+                  </p>
+                  <button className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-4 py-2 text-sm text-white hover:bg-[var(--accent-strong)] transition">
+                    <UploadCloud className="h-4 w-4" />
+                    Upload Data
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column - Table */}
+        <div className="space-y-6">
+          <Card className="rounded-2xl shadow-sm border-[var(--ring)] bg-[var(--card)]">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold text-[var(--text)]">
+                Top Gender Pay Gaps
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="border-b border-[var(--ring)]">
+                    <tr>
+                      <th className="py-3 px-4 text-left font-medium text-[var(--text-muted)]">{t("insights.th.role")}</th>
+                      <th className="py-3 px-4 text-left font-medium text-[var(--text-muted)]">{t("insights.th.gap")}</th>
+                      <th className="py-3 px-4 text-left font-medium text-[var(--text-muted)]">{t("insights.th.n")}</th>
+                      <th className="py-3 px-4 text-left font-medium text-[var(--text-muted)]">{t("insights.th.severity")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.slice(0, 8).map((r, index) => (
+                      <tr 
+                        key={r.role} 
+                        className="border-b border-[var(--ring)] hover:bg-[var(--neutral-soft-bg)] transition-colors"
+                      >
+                        <td className="py-3 px-4 font-medium text-[var(--text)]">{r.role}</td>
+                        <td className="py-3 px-4 text-[var(--text)]">{r.gap.toFixed(1)}%</td>
+                        <td className="py-3 px-4 text-[var(--text-muted)]">{r.n}</td>
+                        <td className="py-3 px-4">
+                          <SeverityBadge level={r.severity} />
+                        </td>
+                      </tr>
+                    ))}
+                    {rows.length === 0 && (
+                      <tr>
+                        <td colSpan={4} className="py-6 text-center text-[var(--text-muted)]">
+                          {t("insights.noRows")}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {rows.length > 8 && (
+                <div className="p-4 border-t border-[var(--ring)]">
+                  <Button variant="ghost" className="w-full text-sm">
+                    View all {rows.length} roles
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
       <SimulationDrawer />
       <CopilotPanel datasetId={datasetId} />
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, TrendingUp, FileDown } from "lucide-react";
+import { MoreHorizontal, TrendingUp, FileDown, Lightbulb, Info } from "lucide-react";
 import { useI18n } from "@/providers/I18nProvider";
 import { useAppStore } from "@/store/app";
 
@@ -15,26 +15,26 @@ const insights: Insight[] = [
   {
     id: "1",
     severity: "High",
-    title: "Engineering gap 8.2% (Role variance high)",
-    recommendation: "Recommend +5% raise for IC2–IC4 in SE. Est. budget +€240k, new gap 2.1%."
+    title: "Engineering pay gap requires immediate attention",
+    recommendation: "Consider targeted raises for IC2–IC4 levels in Software Engineering. Estimated budget impact: €240k, projected gap reduction to 2.1%."
   },
   {
     id: "2",
     severity: "High",
-    title: "H&M has 2 outliers >40% above median",
-    recommendation: "Review exceptions; cap at P90 for IC levels."
+    title: "Outlier compensation detected in H&M department",
+    recommendation: "Review and standardize compensation for roles exceeding P90 benchmarks to ensure fair pay practices."
   },
   {
     id: "3",
     severity: "Medium",
-    title: "Project Manager variance trending ↑",
-    recommendation: "Audit leveling IC3↔IC4 before Q4 cycle."
+    title: "Project Manager leveling needs review",
+    recommendation: "Audit IC3↔IC4 leveling criteria before Q4 compensation cycle to reduce variance."
   },
   {
     id: "4",
     severity: "Low",
-    title: "Sales gap 3.1% (within guardrail)",
-    recommendation: "Monitor trend; consider targeted adjustments for top performers."
+    title: "Sales team pay equity within acceptable range",
+    recommendation: "Continue monitoring trends and consider targeted adjustments for high performers to maintain motivation."
   }
 ];
 
@@ -73,8 +73,16 @@ export default function ExecutiveInsightsFeed() {
     <div className="h-full p-6 bg-[var(--card)] rounded-2xl shadow-md border border-[var(--ring)]">
       {/* Header */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-[var(--text)]">{t("dashboard.insights.title")}</h3>
-        <p className="text-sm text-[var(--text-muted)]">{t("dashboard.insights.subtitle")}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <h3 className="text-lg font-semibold text-[var(--text)]">AI-Powered Insights</h3>
+          <div className="group relative">
+            <Info className="h-4 w-4 text-[var(--text-muted)] cursor-help" />
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-xs bg-[var(--card)] border border-[var(--ring)] rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+              AI analyzes your data to identify pay equity opportunities
+            </div>
+          </div>
+        </div>
+        <p className="text-sm text-[var(--text-muted)]">Prioritized recommendations to close your pay gap</p>
       </div>
 
       {/* Insights List */}
@@ -86,7 +94,7 @@ export default function ExecutiveInsightsFeed() {
             className="p-4 rounded-xl border border-[var(--ring)] bg-[var(--panel)] hover:shadow-md transition-all duration-200 cursor-pointer group"
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-3">
                 <div className="flex items-center gap-2">
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ring-1 ${getSeverityColor(insight.severity)}`}>
                     {t(`common.${insight.severity.toLowerCase()}`)}
@@ -95,9 +103,12 @@ export default function ExecutiveInsightsFeed() {
                 <h4 className="font-semibold text-[var(--text)] leading-tight">
                   {insight.title}
                 </h4>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  {insight.recommendation}
-                </p>
+                <div className="flex items-start gap-2 p-3 rounded-lg bg-[var(--neutral-soft-bg)] border border-[var(--ring)]">
+                  <Lightbulb className="h-4 w-4 text-[var(--accent)] mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-[var(--text)] leading-relaxed">
+                    {insight.recommendation}
+                  </p>
+                </div>
               </div>
               
               <div className="flex items-center gap-2">
@@ -108,7 +119,7 @@ export default function ExecutiveInsightsFeed() {
                     className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[var(--accent-strong)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                   >
                     <TrendingUp className="h-3 w-3" />
-                    {t("common.simulate")}
+                    Simulate Adjustment
                   </button>
                 )}
                 
@@ -129,14 +140,14 @@ export default function ExecutiveInsightsFeed() {
                         className="flex w-full items-center gap-2 px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--neutral-soft-bg)] transition"
                       >
                         <TrendingUp className="h-4 w-4" />
-                        {t("common.simulate")}
+                        Simulate Adjustment
                       </button>
                       <button
                         onClick={(e) => handleExport(e, insight.id)}
                         className="flex w-full items-center gap-2 px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--neutral-soft-bg)] transition"
                       >
                         <FileDown className="h-4 w-4" />
-                        {t("common.export")}
+                        Export to Report
                       </button>
                     </div>
                   </div>

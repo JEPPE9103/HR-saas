@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { UploadCloud, ShieldCheck, FileSpreadsheet, Check, AlertCircle, ArrowLeft } from "lucide-react";
+import { UploadCloud, ShieldCheck, FileSpreadsheet, Check, AlertCircle, ArrowLeft, Lock, Users, Info } from "lucide-react";
 import * as XLSX from "xlsx";
 import { useI18n } from "@/providers/I18nProvider";
 import { z } from "zod";
@@ -146,10 +146,27 @@ export default function UploadWizard({
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-[var(--text)]">{t('upload.title')}</h1>
         <p className="mt-1 text-sm text-[var(--text-muted)]">{t('upload.subtitle')}</p>
-        <div className="mt-3 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]"><ShieldCheck className="h-3 w-3"/> {t('upload.badge.gdpr')}</span>
-          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">{t('upload.badge.euReady')}</span>
-          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 ring-1 bg-[var(--success-soft-bg)] text-[var(--success-soft-fg)] ring-[var(--success-soft-ring)]">{t('upload.badge.iso')}</span>
+        
+        {/* Trust & Security Cues */}
+        <div className="mt-4 p-4 rounded-xl border border-[var(--ring)] bg-[var(--neutral-soft-bg)]">
+          <div className="flex items-center gap-2 mb-3">
+            <ShieldCheck className="h-4 w-4 text-[var(--success)]" />
+            <span className="text-sm font-medium text-[var(--text)]">Your data is secure</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <Check className="h-3 w-3 text-[var(--success)]" />
+              <span className="text-[var(--text-muted)]">GDPR Safe</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Lock className="h-3 w-3 text-[var(--success)]" />
+              <span className="text-[var(--text-muted)]">Encrypted in EU</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="h-3 w-3 text-[var(--success)]" />
+              <span className="text-[var(--text-muted)]">No PII stored</span>
+            </div>
+          </div>
         </div>
       </div>
 
