@@ -21,12 +21,9 @@ export function SiteHeader() {
           </span>
         </div>
         <nav className="flex items-center gap-2 text-sm">
-          <Link href="/" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Home</Link>
-          <Link href="/import" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Import</Link>
-          <Link href="/dashboard" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Dashboard</Link>
-          <Link href="/insights" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Insights</Link>
-          <Link href="/simulate" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Simulate</Link>
-          <Link href="/reports" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Reports</Link>
+          <Link href="/" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Hem</Link>
+          <Link href="/overview" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Översikt</Link>
+          <Link href="/import" className="px-2 py-1 rounded-md text-[var(--text)]/80 hover:text-[var(--text)] hover:bg-slate-50">Importera</Link>
           <LanguageToggle />
           <ThemeToggle />
           <UserMenu />

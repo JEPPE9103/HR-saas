@@ -66,7 +66,7 @@ export default function ImportPage() {
       <div className="rounded-3xl border p-6 shadow-xl border-[var(--ring)] bg-[var(--panel)]">
         <UploadWizard
           onAnalyze={onAnalyze}
-          onUseDemo={() => (window.location.href = "/dashboard?datasetId=demo-se")}
+          onUseDemo={() => (window.location.href = "/overview?datasetId=demo-se")}
         />
       </div>
 
@@ -79,7 +79,7 @@ export default function ImportPage() {
       {summary && (
         <div className="mt-6 card p-4">
           <div className="text-sm text-[var(--text-muted)]">{t('import.summary.rows')}: <strong>{imported}</strong> • {t('import.summary.roles')}: <strong>{summary.roles}
-          </strong> • {t('import.summary.departments')}: <strong>{summary.departments}</strong> <Link href="/dashboard" className="ml-2 underline">{t('import.summary.open')}</Link></div>
+          </strong> • {t('import.summary.departments')}: <strong>{summary.departments}</strong> <Link href="/overview" className="ml-2 underline">{t('import.summary.open')}</Link></div>
         </div>
       )}
       {errors.length > 0 && (

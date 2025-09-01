@@ -36,13 +36,16 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "depcheck": "^1.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "eslint-config-prettier": "^10.1.8",
+    "madge": "^8.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "tailwindcss": "^4",
+    "ts-prune": "^0.10.3",
     "typescript": "^5"
   }
 }

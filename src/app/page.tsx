@@ -70,7 +70,7 @@ export default function HomePage() {
             </form>
             <div className="flex flex-wrap items-center gap-4">
               <a
-                href="/dashboard?datasetId=demo-se"
+                href="/overview?datasetId=demo-se"
                 className="rounded-lg border border-[var(--ring)] px-6 py-3 text-[var(--text)] hover:bg-[var(--neutral-soft-bg)] transition font-medium
                            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
               >
@@ -198,7 +198,7 @@ export default function HomePage() {
             {t('home.finalCta.bookDemo')}
           </a>
           <a 
-            href="/dashboard?datasetId=demo-se" 
+            href="/overview?datasetId=demo-se" 
             className="rounded-xl border px-8 py-4 text-[var(--text)] hover:bg-[var(--neutral-soft-bg)] transition font-semibold text-lg border-[var(--ring)]
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
           >

@@ -31,7 +31,7 @@ export default function LoginPage() {
     const companyId = (us.data() as any)?.companyId as string | undefined;
     if (!companyId){ router.push("/onboarding"); return; }
     const ds = await getDocs(query(collection(db, "datasets"), where("companyId", "==", companyId)));
-    router.push(ds.empty ? "/onboarding" : "/dashboard");
+    router.push(ds.empty ? "/overview" : "/overview");
   }
   return (
     <main className="container py-20 md:py-24">

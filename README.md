@@ -1,4 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PayTransparency - HR MVP
+
+This is a [Next.js](https://nextjs.org) project for pay equity analysis and compliance with EU pay transparency directive.
+
+## App Routes (MVP)
+
+The application now has a simplified navigation with only 4 core routes:
+
+- `/` - Landing page
+- `/login` - Authentication
+- `/import` - Data import and upload
+- `/overview` - Main dashboard with pay gap analysis
+
+### Legacy Routes
+
+All legacy routes have been moved to `_quarantine/` for future reference:
+- `/dashboard` → `/overview` (replaced)
+- `/insights` (moved to quarantine)
+- `/simulate` (moved to quarantine)
+- `/reports` (moved to quarantine)
+- `/onboarding` (moved to quarantine)
+- `/signup` (moved to quarantine)
+- `/contact`, `/privacy`, `/terms`, `/security` (moved to quarantine)
 
 ## Getting Started
 

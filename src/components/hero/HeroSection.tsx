@@ -76,7 +76,7 @@ export default function HeroSection() {
             {t("cta.getStarted")}
           </a>
           <a
-            href="/dashboard?datasetId=demo-se"
+            href="/overview?datasetId=demo-se"
             className="rounded-lg border border-zinc-200 px-4 py-2 text-zinc-900 hover:bg-zinc-100
                        dark:border-[var(--ring)] dark:text-zinc-200 dark:hover:bg-zinc-800"
           >

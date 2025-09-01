@@ -356,7 +356,7 @@ export default function UploadWizard({
         <div className="rounded-2xl border p-8 text-center shadow-lg border-[var(--ring)] bg-[var(--panel)]">
           <h3 className="text-xl font-semibold text-[var(--text)]">{t('upload.done.title')}</h3>
           <p className="mt-2 text-[var(--text-muted)]">{t('upload.done.subtitle')}</p>
-          <a href="/dashboard" className="mt-4 inline-block rounded-lg bg-[var(--accent)] px-4 py-2 text-white hover:bg-[var(--accent-strong)]">
+          <a href="/overview" className="mt-4 inline-block rounded-lg bg-[var(--accent)] px-4 py-2 text-white hover:bg-[var(--accent-strong)]">
             {t('upload.goToDashboard')}
           </a>
         </div>
