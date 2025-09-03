@@ -61,33 +61,19 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* Pricing Cards - 2026 Modern Design */}
+        {/* Pricing Cards */}
         <div className="grid gap-8 lg:grid-cols-3 mb-20">
           {Object.entries(PRICING_PLANS).map(([planKey, plan]) => (
             <div
               key={planKey}
-                      className={`group relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 ${
-          planKey === 'free' ? 'bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl' :
-          planKey === 'team' ? 'bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl ring-2 ring-mint-500/30 ring-offset-4' :
-          'bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl'
-        }`}
+              className={`group relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl`}
             >
-              {/* Background blur effect */}
               <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl ${
                 planKey === 'free' ? 'bg-gradient-to-br from-slate-200/20 to-slate-300/10' :
                 planKey === 'team' ? 'bg-gradient-to-br from-mint-200/20 to-teal-300/10' :
                 'bg-gradient-to-br from-coral-200/20 to-rose-300/10'
               }`} />
-              
-              {planKey === 'team' && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
-                  <span className="bg-gradient-to-r from-mint-600 to-teal-600 text-white px-6 py-3 rounded-full text-sm font-medium shadow-lg">
-                    {t('pricing.mostPopular')}
-                  </span>
-                </div>
-              )}
-
-              <div className="relative z-10 text-center mb-8">
+              <div className="text-center relative z-10">
                 <div className="flex justify-center mb-6">
                   <div className={`p-4 rounded-2xl ${
                     planKey === 'free' ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700' :
@@ -97,19 +83,12 @@ export default function PricingPage() {
                     {getPlanIcon(planKey)}
                   </div>
                 </div>
-                <h3 className="text-2xl font-light text-slate-800 mb-4 tracking-tight">
-                  {t(`pricing.${planKey}.name`)}
-                </h3>
+                <h3 className="text-2xl font-light text-slate-800 mb-4 tracking-tight">{t(`pricing.${planKey}.name`)}</h3>
                 <div className="mb-6">
-                  <span className="text-5xl font-light text-slate-800">
-                    {plan.price === 0 ? t('pricing.free.price') : `${plan.price.toLocaleString('sv-SE')} ${t('pricing.currency')}`}
-                  </span>
-                  {plan.price > 0 && (
-                    <span className="text-slate-600 font-light">{t('pricing.perMonth')}</span>
-                  )}
+                  <span className="text-5xl font-light text-slate-800">{plan.price === 0 ? t('pricing.free.price') : `${plan.price.toLocaleString('sv-SE')} ${t('pricing.currency')}`}</span>
+                  {plan.price > 0 && <span className="text-slate-600 font-light">{t('pricing.perMonth')}</span>}
                 </div>
               </div>
-
               <ul className="space-y-4 mb-8 relative z-10">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start">
@@ -118,7 +97,6 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-
               <div className="text-center relative z-10">
                 <button
                   className={`w-full rounded-2xl py-4 font-medium transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-white ${
@@ -126,18 +104,10 @@ export default function PricingPage() {
                     planKey === 'team' ? 'bg-gradient-to-r from-mint-600 to-teal-600 hover:from-mint-700 hover:to-teal-700' :
                     'bg-gradient-to-r from-coral-600 to-rose-600 hover:from-coral-700 hover:to-rose-700'
                   }`}
-                  onClick={planKey === 'free'
-                    ? () => window.location.href = '/import'
-                    : () => handleSubscribe(planKey as 'team' | 'enterprise')}
+                  onClick={planKey === 'free' ? () => (window.location.href = '/import') : () => handleSubscribe(planKey as 'team' | 'enterprise')}
                   disabled={planKey !== 'free' && (!billingEnabled() || loading === planKey)}
                 >
-                  {planKey === 'free'
-                    ? t('pricing.cta.free')
-                    : !billingEnabled()
-                      ? t('pricing.cta.contact')
-                      : loading === planKey
-                        ? t('pricing.cta.loading')
-                        : t('pricing.cta.subscribe')}
+                  {planKey === 'free' ? t('pricing.cta.free') : (!billingEnabled() ? t('pricing.cta.contact') : (loading === planKey ? t('pricing.cta.loading') : t('pricing.cta.subscribe')))}
                 </button>
               </div>
             </div>

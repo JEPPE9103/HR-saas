@@ -382,6 +382,7 @@ export const sv = {
   "pricing.cta.free": "Kom igång gratis",
   "pricing.cta.subscribe": "Starta prenumeration",
   "pricing.cta.loading": "Laddar...",
+  "pricing.cta.contact": "Kontakta sälj",
   "pricing.faq.title": "Vanliga frågor",
   "pricing.faq.changePlan.question": "Kan jag byta plan när som helst?",
   "pricing.faq.changePlan.answer": "Ja, du kan uppgradera eller nedgradera din plan när som helst. Ändringar träder i kraft vid nästa faktureringsperiod.",

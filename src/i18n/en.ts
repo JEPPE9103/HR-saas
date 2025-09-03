@@ -387,6 +387,7 @@ export const en = {
   "pricing.cta.free": "Get started free",
   "pricing.cta.subscribe": "Start subscription",
   "pricing.cta.loading": "Loading...",
+  "pricing.cta.contact": "Contact sales",
   "pricing.faq.title": "Frequently asked questions",
   "pricing.faq.changePlan.question": "Can I change plans anytime?",
   "pricing.faq.changePlan.answer": "Yes, you can upgrade or downgrade your plan anytime. Changes take effect at the next billing period.",
