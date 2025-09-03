@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useI18n } from "@/providers/I18nProvider";
 import { Upload, FileText, BarChart3, Bot, Users, Lightbulb } from "lucide-react";
+import { PageTitle } from "@/components/ui/PageTitle";
 import GapTrendChart from "@/components/overview/GapTrendChart";
 import KpiCards from "@/components/overview/KpiCards";
 import AiExplanation from "@/components/overview/AiExplanation";
@@ -141,22 +142,11 @@ export default function OverviewPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         {/* Compact Header */}
         <div className="relative overflow-hidden text-center mb-12">
-          {/* Background Elements */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/10" />
-          <div className="absolute top-8 left-16 w-48 h-48 bg-gradient-to-br from-mint-200/30 to-teal-300/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-8 right-16 w-64 h-64 bg-gradient-to-br from-coral-200/20 to-rose-300/15 rounded-full blur-3xl" />
-          
           <div className="relative z-10">
-            {/* Compact Icon */}
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-slate-100 via-white to-blue-50 rounded-2xl mb-6 shadow-xl border border-white/20 backdrop-blur-sm">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl mb-4 shadow-xl border border-white/20">
               <BarChart3 className="w-8 h-8 text-slate-700" />
             </div>
-            
-            {/* Compact Typography */}
-            <h1 className="text-4xl font-light text-slate-800 mb-4 leading-tight tracking-tight">{t('overview.title')}</h1>
-            <p className="text-lg text-slate-600 max-w-xl mx-auto leading-relaxed font-light">
-              {t('overview.lastComputed')} {computedAt}
-            </p>
+            <PageTitle subtitle={<span>{t('overview.lastComputed')} {computedAt}</span>}>{t('overview.title')}</PageTitle>
           </div>
         </div>
 

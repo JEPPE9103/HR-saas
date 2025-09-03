@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useI18n } from "@/providers/I18nProvider";
 import { PRICING_PLANS, billingEnabled } from '@/lib/pricing';
+import { PageTitle } from '@/components/ui/PageTitle';
 import { Check, Star, Zap, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
@@ -44,20 +45,10 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-white py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header - 2026 Modern Design */}
+        {/* Header */}
         <div className="relative overflow-hidden text-center mb-20">
-          {/* Background Elements - Light theme only */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-slate-100/20 to-slate-200/10" />
-          <div className="absolute top-10 left-20 w-64 h-64 bg-gradient-to-br from-mint-200/30 to-teal-300/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-20 w-80 h-80 bg-gradient-to-br from-coral-200/20 to-rose-300/15 rounded-full blur-3xl" />
-          
           <div className="relative z-10">
-            <h1 className="text-6xl font-light text-slate-800 mb-8 leading-tight tracking-tight">
-              {t('pricing.title')}
-            </h1>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-light">
-              {t('pricing.subtitle')}
-            </p>
+            <PageTitle subtitle={t('pricing.subtitle')}>{t('pricing.title')}</PageTitle>
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useI18n } from "@/providers/I18nProvider";
+import { PageTitle } from "@/components/ui/PageTitle";
 import ImportWizard from '@/components/import/ImportWizard';
 import { FileSpreadsheet, BarChart3, Users, Shield } from 'lucide-react';
 
@@ -24,24 +25,11 @@ export default function ImportPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
         {/* Hero Section - 2026 Modern Design */}
         <div className="relative overflow-hidden text-center mb-20">
-          {/* Background Elements */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/20 to-indigo-50/10" />
-          <div className="absolute top-10 left-20 w-64 h-64 bg-gradient-to-br from-mint-200/30 to-teal-300/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-20 w-80 h-80 bg-gradient-to-br from-coral-200/20 to-rose-300/15 rounded-full blur-3xl" />
-          
           <div className="relative z-10">
-            {/* Modern Icon with 2026 styling */}
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-slate-100 via-white to-blue-50 rounded-3xl mb-10 shadow-2xl backdrop-blur-sm">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl mb-6 shadow-2xl">
               <FileSpreadsheet className="w-12 h-12 text-slate-700" />
             </div>
-            
-            {/* Typography Hierarchy */}
-            <h1 className="text-6xl font-light text-slate-800 mb-8 leading-tight tracking-tight">
-              {t('import.title')}
-            </h1>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-light">
-              {t('import.subtitle')}
-            </p>
+            <PageTitle subtitle={t('import.subtitle')}>{t('import.title')}</PageTitle>
           </div>
         </div>
 
