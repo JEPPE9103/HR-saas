@@ -191,7 +191,7 @@ export default function ReportsPage() {
         {/* Left Sidebar */}
         <div className="lg:col-span-1 space-y-6">
         {/* Saved Reports */}
-          <Card className="border-[var(--ring)] bg-[var(--card)] shadow-md rounded-2xl">
+          <Card>
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-semibold text-[var(--text)] flex items-center gap-2">
                 <FileText className="h-5 w-5" />
@@ -254,7 +254,7 @@ export default function ReportsPage() {
         </Card>
 
         {/* Block Library */}
-          <Card className="border-[var(--ring)] bg-[var(--card)] shadow-md rounded-2xl">
+          <Card>
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-semibold text-[var(--text)] flex items-center gap-2">
                 <Sparkles className="h-5 w-5" />
@@ -294,7 +294,7 @@ export default function ReportsPage() {
         {/* Main Workspace */}
         <div className="lg:col-span-3 space-y-6">
           {/* Builder Workspace */}
-          <Card className="border-[var(--ring)] bg-[var(--card)] shadow-md rounded-2xl">
+          <Card>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-semibold text-[var(--text)]">
@@ -458,7 +458,7 @@ export default function ReportsPage() {
         </Card>
 
           {/* AI Copilot */}
-          <Card className="border-[var(--ring)] bg-[var(--card)] shadow-md rounded-2xl">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-full bg-[var(--accent-soft-bg)]">

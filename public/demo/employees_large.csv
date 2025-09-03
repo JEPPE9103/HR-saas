@@ -1,0 +1,26 @@
+employee_id,name,gender,department,level,country,base_salary_sek,currency,hire_date,tenant_id,created_at
+EMP001,Anna Andersson,female,IT,Senior,Sweden,45000,SEK,2020-01-15,tenant1,2024-01-01
+EMP002,Erik Eriksson,male,HR,Medior,Sweden,38000,SEK,2019-06-01,tenant1,2024-01-01
+EMP003,Maria Svensson,female,Finance,Lead,Norway,52000,NOK,2018-03-15,tenant1,2024-01-01
+EMP004,Johan Johansson,male,Sales,Manager,Denmark,48000,DKK,2021-09-01,tenant1,2024-01-01
+EMP005,Lisa Lindberg,female,Engineering,Senior,Sweden,47000,SEK,2020-11-01,tenant1,2024-01-01
+EMP006,Peter Petersson,male,Marketing,Junior,Finland,35000,EUR,2022-02-01,tenant1,2024-01-01
+EMP007,Sofia Söderberg,female,Operations,Medior,Sweden,40000,SEK,2019-12-01,tenant1,2024-01-01
+EMP008,Anders Andersson,male,Legal,Senior,Sweden,55000,SEK,2017-08-01,tenant1,2024-01-01
+EMP009,Eva Ekström,female,Product,Lead,Sweden,50000,SEK,2020-04-01,tenant1,2024-01-01
+EMP010,Mikael Mikaelsson,male,Design,Medior,Norway,42000,NOK,2021-01-01,tenant1,2024-01-01
+EMP011,Karin Karlsson,female,IT,Junior,Sweden,32000,SEK,2022-05-01,tenant1,2024-01-01
+EMP012,Lars Larsson,male,HR,Senior,Sweden,42000,SEK,2018-11-01,tenant1,2024-01-01
+EMP013,Helena Holm,female,Finance,Medior,Sweden,39000,SEK,2020-07-01,tenant1,2024-01-01
+EMP014,Thomas Thomasson,male,Sales,Lead,Sweden,51000,SEK,2019-02-01,tenant1,2024-01-01
+EMP015,Ingrid Ingemarsson,female,Engineering,Manager,Sweden,54000,SEK,2017-12-01,tenant1,2024-01-01
+EMP016,Daniel Danielsson,male,Marketing,Senior,Sweden,44000,SEK,2020-08-01,tenant1,2024-01-01
+EMP017,Monica Månsson,female,Operations,Lead,Sweden,49000,SEK,2019-04-01,tenant1,2024-01-01
+EMP018,Stefan Stefansson,male,Legal,Medior,Sweden,41000,SEK,2021-03-01,tenant1,2024-01-01
+EMP019,Ulrika Ulriksson,female,Product,Senior,Sweden,46000,SEK,2020-06-01,tenant1,2024-01-01
+EMP020,Magnus Magnusson,male,Design,Lead,Sweden,52000,SEK,2018-09-01,tenant1,2024-01-01
+EMP021,Elisabeth Elisabetsson,female,IT,Manager,Sweden,56000,SEK,2017-06-01,tenant1,2024-01-01
+EMP022,Per Persson,male,HR,Lead,Sweden,48000,SEK,2019-01-01,tenant1,2024-01-01
+EMP023,Birgitta Birgittasson,female,Finance,Manager,Sweden,55000,SEK,2018-04-01,tenant1,2024-01-01
+EMP024,Hans Hansson,male,Sales,Senior,Sweden,45000,SEK,2020-12-01,tenant1,2024-01-01
+EMP025,Christina Christinasson,female,Engineering,Lead,Sweden,51000,SEK,2019-08-01,tenant1,2024-01-01

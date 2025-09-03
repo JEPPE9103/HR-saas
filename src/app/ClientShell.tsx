@@ -5,8 +5,9 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { I18nProvider } from "@/providers/I18nProvider";
 // Legacy components moved to _quarantine - using stubs
-import { CopilotPanel, SimulationDrawer } from "@/components/stubs";
+import { SimulationDrawer } from "@/components/stubs";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OpenCopilotButton } from "@/components/OpenCopilotButton";
 
 export default function ClientShell({ children }: { children: ReactNode }) {
   return (
@@ -16,8 +17,9 @@ export default function ClientShell({ children }: { children: ReactNode }) {
           <SiteHeader />
           <main className="container-pro py-10 md:py-12">{children}</main>
           {/* Legacy components moved to _quarantine - using stubs */}
-          <CopilotPanel datasetId="demo-se" />
           <SimulationDrawer />
+          {/* Global AI Copilot */}
+          <OpenCopilotButton />
         </AuthProvider>
       </I18nProvider>
     </ThemeProvider>

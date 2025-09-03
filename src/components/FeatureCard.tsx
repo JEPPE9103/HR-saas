@@ -14,10 +14,10 @@ export default function FeatureCard({
       transition={{ duration: 0.4 }}
       className="card-muted p-5 shadow-md hover:shadow-lg rounded-xl transition-transform hover:-translate-y-0.5"
     >
-      <div className="mb-2 flex items-center gap-2 text-[var(--text)]">
+      <div className="mb-2 flex items-center gap-2 text-slate-800">
         {icon}<h3 className="font-medium">{title}</h3>
       </div>
-      <p className="text-sm text-[var(--text-muted)]">{children}</p>
+      <p className="text-sm text-slate-600">{children}</p>
     </motion.div>
   );
 }

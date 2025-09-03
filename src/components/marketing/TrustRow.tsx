@@ -17,11 +17,11 @@ export default function TrustRow() {
   return (
     <div className="py-8">
       {/* Top divider */}
-      <div className="h-px bg-[var(--ring)] opacity-10 mb-8"></div>
+              <div className="h-px bg-slate-200 opacity-10 mb-8"></div>
       
       {/* Trust section */}
       <div className="text-center">
-        <p className="text-sm font-medium text-[var(--text-muted)] mb-6 uppercase tracking-wide">
+        <p className="text-sm font-medium text-slate-500 mb-6 uppercase tracking-wide">
           {t("home.trustline")}
         </p>
         
@@ -41,7 +41,7 @@ export default function TrustRow() {
       </div>
       
       {/* Bottom divider */}
-      <div className="h-px bg-[var(--ring)] opacity-10 mt-8"></div>
+              <div className="h-px bg-slate-200 opacity-10 mt-8"></div>
     </div>
   );
 }

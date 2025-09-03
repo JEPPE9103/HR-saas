@@ -1,10 +1,14 @@
 // Stub components for legacy components moved to _quarantine
 // These are empty components to prevent import errors
 
+import { OpenCopilotButton } from './OpenCopilotButton';
+
 export const SimulationDrawer = () => null;
 export const SimulationResultPanel = () => null;
 export const SimulationStickyBar = () => null;
-export const CopilotPanel = ({ datasetId }: { datasetId: string }) => null;
+export const CopilotPanel = ({ datasetId }: { datasetId: string }) => {
+  return <OpenCopilotButton />;
+};
 
 // Dashboard component stubs
 export const ExecutiveKpiCard = ({ title, value, icon, isHighlighted, yoyDelta }: any) => null;

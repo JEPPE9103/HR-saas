@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "clean": "rimraf .next .turbo || rmdir /s /q .next && rmdir /s /q .turbo"
@@ -13,6 +13,9 @@
   "dependencies": {
     "@react-three/drei": "^10.7.4",
     "@react-three/fiber": "^9.3.0",
+    "@stripe/stripe-js": "^7.9.0",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.56.1",
     "clsx": "^2.1.1",
     "firebase": "^12.1.0",
     "firebase-admin": "^12.7.0",
@@ -20,10 +23,12 @@
     "lucide-react": "^0.541.0",
     "next": "15.5.0",
     "next-themes": "^0.4.6",
+    "openai": "^5.16.0",
     "papaparse": "^5.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "recharts": "^3.1.2",
+    "stripe": "^18.5.0",
     "xlsx": "^0.18.5",
     "zod": "^4.0.17",
     "zustand": "^5.0.8"

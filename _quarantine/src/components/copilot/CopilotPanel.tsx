@@ -86,18 +86,37 @@ export function CopilotPanel({ datasetId }: { datasetId: string }) {
                 </div>
               ))}
             </div>
-            {/* Slash commands + input */}
+            {/* Enhanced AI commands + input */}
             <div className="p-3 border-t border-[var(--ring)]">
-              <div className="mb-2 flex gap-2 flex-wrap">
-                <Quick label="/gap" value="/gap show top" />
-                <Quick label="/outliers" value="/outliers list" />
-                <Quick label="/simulate" value='"/simulate role:\"Engineer\" +5%"' />
-                <Quick label="/report" value="/report export" />
+              <div className="mb-3">
+                <p className="text-xs text-[var(--text-muted)] mb-2 font-medium">🚀 AI-kommandon & snabbåtgärder:</p>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <Quick label="🔍 Analysera" value="/analyze" />
+                  <Quick label="🎯 Rekommendera" value="/recommend" />
+                  <Quick label="📈 Trend" value="/trend" />
+                  <Quick label="📋 Handlingsplan" value="/action" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Quick label="🎯 Simulera" value="/simulate" />
+                  <Quick label="📊 Övervaka" value="/monitor" />
+                  <Quick label="📄 Rapport" value="/report" />
+                  <Quick label="👋 Hej AI" value="hej" />
+                </div>
               </div>
               <div className="flex gap-2">
-                <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask a question..." />
-                <Button onClick={send}>Send</Button>
+                <Input 
+                  value={input} 
+                  onChange={(e) => setInput(e.target.value)} 
+                  placeholder="Ställ en fråga eller använd kommandon..." 
+                  onKeyPress={(e) => e.key === 'Enter' && send()}
+                />
+                <Button onClick={send} className="bg-[var(--accent)] hover:bg-[var(--accent)]/80">
+                  Skicka
+                </Button>
               </div>
+              <p className="text-xs text-[var(--text-muted)] mt-2 text-center">
+                💡 Prova: "Vilka avdelningar har störst lönegap?" eller "/analyze"
+              </p>
             </div>
           </div>
         </div>

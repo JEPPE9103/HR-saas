@@ -11,9 +11,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", ...props }, ref) => {
     const base = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none h-9 px-4 py-2";
     const styles = {
-      primary: "bg-[var(--accent)] text-white hover:brightness-95 dark:bg-[var(--accent)] dark:hover:bg-[var(--accent-strong)] focus-visible:ring-[var(--accent)]",
-      secondary: "bg-white text-[var(--text)] hover:bg-slate-50 border border-[var(--ring)] dark:bg-[#0f172a] dark:text-slate-200 dark:hover:bg-slate-900 dark:border-[var(--ring)] focus-visible:ring-[var(--ring)]",
-      ghost: "bg-white text-[var(--text)] hover:bg-slate-50 border border-[var(--ring)] dark:bg-[#0f172a] dark:text-slate-200 dark:hover:bg-slate-900 dark:border-[var(--ring)] focus-visible:ring-[var(--ring)]",
+      primary: "bg-slate-600 text-white hover:bg-slate-700 focus-visible:ring-slate-600",
+      secondary: "bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 focus-visible:ring-slate-300",
+      ghost: "bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 focus-visible:ring-slate-300",
     } as const;
     return (
       <button ref={ref} className={clsx(base, styles[variant], className)} {...props} />

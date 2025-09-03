@@ -9,21 +9,21 @@ export function TrustLogos(){
   return (
     <div className="mt-10">
       {/* Top divider */}
-      <div className="h-px bg-[var(--ring)] opacity-30 mb-8"></div>
+      <div className="h-px bg-gray-200 opacity-30 mb-8"></div>
       
       {/* Main content */}
       <div className="text-center">
-        <p className="mb-4 text-xs font-medium tracking-wide text-[var(--text-muted)] uppercase">
+        <p className="mb-4 text-xs font-medium tracking-wide text-gray-600 uppercase">
           Trusted by HR & Finance teams
         </p>
         
         {/* Scrolling logos */}
-        <div className="relative overflow-hidden rounded-xl bg-[var(--panel)] p-3">
+        <div className="relative overflow-hidden rounded-xl bg-gray-50 p-3">
           <div className="flex animate-scroll whitespace-nowrap">
             {companies.map((company, index) => (
               <div 
                 key={index} 
-                className="mx-6 flex-shrink-0 text-sm font-medium text-[var(--text)]"
+                className="mx-6 flex-shrink-0 text-sm font-medium text-gray-700"
               >
                 {company}
               </div>
@@ -33,7 +33,7 @@ export function TrustLogos(){
       </div>
       
       {/* Bottom divider */}
-      <div className="h-px bg-[var(--ring)] opacity-30 mt-8"></div>
+      <div className="h-px bg-gray-200 opacity-30 mt-8"></div>
     </div>
   );
 }

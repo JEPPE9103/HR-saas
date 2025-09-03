@@ -27,7 +27,7 @@ export default function CopilotDemo(){
   }, [i]);
 
   return (
-    <div className="rounded-xl border px-3 py-2 text-sm shadow-lg backdrop-blur border-[var(--ring)] bg-[var(--panel)] text-[var(--text)]">
+            <div className="rounded-xl border px-3 py-2 text-sm shadow-lg backdrop-blur border-slate-200 bg-white text-slate-800">
       <span className="mr-2 inline-block h-2 w-2 animate-pulse rounded-full bg-indigo-500" />
       {text}
     </div>

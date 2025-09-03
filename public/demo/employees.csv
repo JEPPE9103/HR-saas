@@ -1,0 +1,16 @@
+employee_id,name,gender,department,job_family,level,country,fte,base_salary_sek,currency,hire_date
+EMP001,Anna Andersson,female,Sales,Sales Executive,L2,Sweden,1.0,45000,SEK,2023-01-15
+EMP002,Erik Eriksson,male,Engineering,Software Engineer,L3,Sweden,1.0,52000,SEK,2022-06-01
+EMP003,Maria Svensson,female,Marketing,Marketing Manager,L3,Sweden,1.0,48000,SEK,2023-03-10
+EMP004,Johan Johansson,male,Engineering,Software Engineer,L2,Sweden,1.0,47000,SEK,2022-09-15
+EMP005,Lisa Lindberg,female,Sales,Sales Executive,L2,Sweden,1.0,44000,SEK,2023-02-20
+EMP006,Peter Petersson,male,Operations,Operations Manager,L3,Sweden,1.0,51000,SEK,2022-11-01
+EMP007,Sofia Söderberg,female,Engineering,Software Engineer,L3,Sweden,1.0,53000,SEK,2022-07-15
+EMP008,Anders Andersson,male,Marketing,Marketing Specialist,L2,Sweden,1.0,46000,SEK,2023-04-05
+EMP009,Eva Ekström,female,Operations,Operations Specialist,L2,Sweden,1.0,45000,SEK,2023-01-30
+EMP010,Mikael Mikaelsson,male,Engineering,Software Engineer,L2,Sweden,1.0,48000,SEK,2022-12-10
+EMP011,Karin Karlsson,female,Sales,Sales Manager,L3,Sweden,1.0,49000,SEK,2022-08-20
+EMP012,Thomas Thomasson,male,Marketing,Marketing Manager,L3,Sweden,1.0,50000,SEK,2022-10-15
+EMP013,Helena Hellström,female,Engineering,Software Engineer,L3,Sweden,1.0,54000,SEK,2022-05-01
+EMP014,Daniel Danielsson,male,Operations,Operations Manager,L3,Sweden,1.0,52000,SEK,2023-05-10
+EMP015,Monica Månsson,female,Sales,Sales Executive,L2,Sweden,1.0,43000,SEK,2023-06-01

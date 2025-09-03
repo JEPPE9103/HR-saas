@@ -29,58 +29,61 @@ export default function EnterpriseHeroChart() {
   const yoyDelta = lastYearGap - currentGap;
 
   return (
-    <div className="h-full p-6 bg-[var(--card)] rounded-2xl shadow-sm border border-[var(--ring)]">
+    <div className="group relative overflow-hidden h-full bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-200/50 p-8 hover:border-slate-300/50 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-200/20 to-purple-300/10 rounded-full blur-2xl" />
+      
       {/* Chart Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xl font-semibold text-[var(--text)]">{t("hero.chart.title")}</h3>
-          <div className={`text-sm font-medium ${
-            yoyDelta > 0 ? 'text-[var(--success)]' : 'text-[var(--danger)]'
+      <div className="relative z-10 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-2xl font-light text-slate-800 tracking-tight">{t("hero.chart.title")}</h3>
+          <div className={`text-sm font-medium px-3 py-1 rounded-full ${
+            yoyDelta > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
           }`}>
-            {t("hero.chart.yoyDelta")}
+            {yoyDelta > 0 ? '+' : ''}{yoyDelta.toFixed(1)} pp since last year
           </div>
         </div>
-        <p className="text-sm text-[var(--text-muted)]">{t("hero.chart.subtitle")}</p>
+        <p className="text-slate-600 font-light leading-relaxed">{t("hero.chart.subtitle")}</p>
       </div>
 
       {/* Current value badge */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 bg-[var(--accent-soft-bg)] text-[var(--accent-soft-fg)] ring-1 ring-[var(--accent-soft-ring)]">
-          <span className="text-xs font-medium">{t("hero.chart.today")}</span>
-          <span className="text-sm font-bold">{currentGap.toFixed(1)}%</span>
+      <div className="relative z-10 flex items-center justify-between mb-8">
+        <div className="inline-flex items-center gap-3 rounded-2xl px-4 py-2 bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 ring-1 ring-indigo-200/50">
+          <span className="text-sm font-medium">{t("hero.chart.today")}</span>
+          <span className="text-lg font-light">{currentGap.toFixed(1)}%</span>
         </div>
       </div>
       
       {/* Chart */}
-      <div className="h-64">
+      <div className="relative z-10 h-64">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorGap" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.15}/>
-                <stop offset="95%" stopColor="var(--accent)" stopOpacity={0.05}/>
+                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.15}/>
+                <stop offset="95%" stopColor="#6366f1" stopOpacity={0.05}/>
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} stroke="var(--ring)" strokeOpacity={0.2} strokeDasharray="3 3" />
+            <CartesianGrid vertical={false} stroke="#e2e8f0" strokeOpacity={0.4} strokeDasharray="3 3" />
             <XAxis 
               dataKey="month" 
-              tick={{ fontSize: 12, fill: 'var(--text-muted)' }}
-              axisLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
-              tickLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
+              tick={{ fontSize: 12, fill: '#64748b' }}
+              axisLine={{ stroke: '#e2e8f0', strokeOpacity: 0.6 }}
+              tickLine={{ stroke: '#e2e8f0', strokeOpacity: 0.6 }}
             />
             <YAxis 
-              tick={{ fontSize: 12, fill: 'var(--text-muted)' }}
-              axisLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
-              tickLine={{ stroke: 'var(--ring)', strokeOpacity: 0.3 }}
+              tick={{ fontSize: 12, fill: '#64748b' }}
+              axisLine={{ stroke: '#e2e8f0', strokeOpacity: 0.6 }}
+              tickLine={{ stroke: '#e2e8f0', strokeOpacity: 0.6 }}
             />
             <Tooltip 
               contentStyle={{
-                backgroundColor: 'var(--card)',
-                border: '1px solid var(--ring)',
-                borderRadius: '12px',
-                color: 'var(--text)',
-                boxShadow: '0 8px 25px -5px rgba(0, 0, 0, 0.1)',
-                fontSize: '12px'
+                backgroundColor: 'white',
+                border: '1px solid #e2e8f0',
+                borderRadius: '16px',
+                color: '#334155',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                fontSize: '12px',
+                padding: '12px 16px'
               }}
               formatter={(value: any) => [`${value}%`, 'Pay Gap']}
               labelFormatter={(label) => `${label} 2027`}
@@ -88,28 +91,29 @@ export default function EnterpriseHeroChart() {
             <Area 
               type="monotone" 
               dataKey="gap" 
-              stroke="var(--accent)" 
+              stroke="#6366f1" 
               fill="url(#colorGap)"
               strokeWidth={3}
             />
             <Line 
               type="monotone" 
               dataKey="gap" 
-              stroke="var(--accent)" 
+              stroke="#6366f1" 
               strokeWidth={3} 
-              dot={{ fill: 'var(--accent)', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: 'var(--accent)', strokeWidth: 2 }}
+              dot={{ fill: '#6366f1', strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, stroke: '#6366f1', strokeWidth: 2 }}
             />
             <ReferenceLine 
               y={2} 
-              stroke="var(--text-muted)" 
+              stroke="#94a3b8" 
               strokeDasharray="4 4" 
-              strokeOpacity={0.6}
+              strokeOpacity={0.8}
               label={{ 
                 value: t("hero.chart.euTarget"), 
-                fill: "var(--text-muted)", 
+                fill: "#64748b", 
                 position: "insideTopRight", 
-                fontSize: 11 
+                fontSize: 11,
+                fontWeight: 500
               }} 
             />
           </AreaChart>

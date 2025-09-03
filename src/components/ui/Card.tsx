@@ -1,17 +1,21 @@
-import { clsx } from "clsx";
-import { HTMLAttributes } from "react";
+"use client";
 
-export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+import { HTMLAttributes } from "react";
+import { clsx } from "clsx";
+
+interface CardProps {
+  title?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}
+
+export function Card({ title, children, footer }: CardProps) {
   return (
-    <div
-      className={clsx(
-        // Theme-aware card
-        "rounded-2xl border shadow-lg",
-        "border-[var(--ring)] bg-[var(--panel)] text-[var(--text)]",
-        className
-      )}
-      {...props}
-    />
+    <section className="mt-6 rounded-xl border border-[var(--ring)] bg-[var(--card)]">
+      {title && <header className="border-b border-[var(--ring)] px-6 py-4 text-base font-semibold text-[var(--text)]">{title}</header>}
+      <div className="px-6 py-6">{children}</div>
+      {footer && <footer className="border-t border-[var(--ring)] px-6 py-4">{footer}</footer>}
+    </section>
   );
 }
 

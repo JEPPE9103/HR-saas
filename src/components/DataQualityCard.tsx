@@ -1,7 +1,7 @@
 export function DataQualityCard({ issues }: { issues: { type: string; detail: string }[] }) {
   return (
     <div className="card p-5">
-      <h3 className="text-base font-semibold text-[var(--text)]">Data Quality</h3>
+              <h3 className="text-base font-semibold text-slate-800">Data Quality</h3>
       {issues.length === 0 ? (
         <p className="mt-2 text-sm subtle">No issues detected.</p>
       ) : (

@@ -24,18 +24,18 @@ export default function HeroChart(){
   ), []);
 
   return (
-    <div className="relative h-72 w-full overflow-hidden md:h-96 p-3 md:min-w-[520px] bg-[var(--panel)] rounded-2xl shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5">
+    <div className="relative h-72 w-full overflow-hidden md:h-96 p-3 md:min-w-[520px] bg-white rounded-2xl shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
-          <CartesianGrid vertical={false} stroke="var(--ring)" strokeOpacity={0.6} />
-          <XAxis dataKey="m" tick={{ fill: "var(--text-muted)", fontSize: 12 }} />
-          <YAxis tick={{ fill: "var(--text-muted)", fontSize: 12 }} />
+          <CartesianGrid vertical={false} stroke="#e2e8f0" strokeOpacity={0.6} />
+          <XAxis dataKey="m" tick={{ fill: "#64748b", fontSize: 12 }} />
+          <YAxis tick={{ fill: "#64748b", fontSize: 12 }} />
           <Tooltip />
-          <Line type="monotone" dataKey="gap" stroke="var(--accent)" strokeWidth={3} dot={false} isAnimationActive />
-          <ReferenceLine y={2} stroke="var(--success)" strokeDasharray="3 3" label={{ value: t('home.chart.goal'), fill: "var(--success)", position: "insideTopRight", fontSize: 12 }} />
+          <Line type="monotone" dataKey="gap" stroke="#6366f1" strokeWidth={3} dot={false} isAnimationActive />
+          <ReferenceLine y={2} stroke="#10b981" strokeDasharray="3 3" label={{ value: t('home.chart.goal'), fill: "#10b981", position: "insideTopRight", fontSize: 12 }} />
         </LineChart>
       </ResponsiveContainer>
-      <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-[var(--text-muted)]">{t('dashboard.trend')}</div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-xs text-slate-500">{t('dashboard.trend')}</div>
     </div>
   );
 }
