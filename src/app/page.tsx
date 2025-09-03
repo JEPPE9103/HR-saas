@@ -26,8 +26,7 @@ export default function HomePage() {
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-coral-200/30 to-rose-300/20 rounded-full blur-3xl" />
           
           <div className="relative z-10 text-center mb-20">
-            {/* Modern Icon with 2026 styling - Light theme */}
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-slate-100 via-white to-slate-200 rounded-3xl mb-10 shadow-2xl backdrop-blur-sm">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl mb-10 shadow-2xl">
               <ShieldCheck className="w-12 h-12 text-slate-700" />
             </div>
             

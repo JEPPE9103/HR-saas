@@ -6,10 +6,10 @@ import React from 'react'
 export function SafeThemeScript() {
   const js = `(function(){
     try {
+      // Lock light theme for demo
       var key='pt-theme';
-      var t=localStorage.getItem(key);
-      if (t==='dark') { document.documentElement.classList.add('dark'); }
-      else { document.documentElement.classList.remove('dark'); }
+      localStorage.setItem(key,'light');
+      document.documentElement.classList.remove('dark');
     } catch(e){}
   })();`;
   // eslint-disable-next-line react/no-danger

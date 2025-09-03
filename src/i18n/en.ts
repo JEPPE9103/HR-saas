@@ -7,6 +7,7 @@ export const en = {
   "nav.reports": "Reports",
   "nav.overview": "Overview",
   "nav.pricing": "Pricing",
+  "nav.contact": "Contact",
   "cta.getStarted": "Get started",
   "cta.tryDemo": "Try demo",
   "hero.title": "Pay Equity. Simplified.",
@@ -396,7 +397,15 @@ export const en = {
   "pricing.faq.billing.question": "Do you support invoicing?",
   "pricing.faq.billing.answer": "Yes, Enterprise customers can get invoicing via email. Contact our support for more information.",
   "pricing.faq.support.question": "Support & Security",
-  "pricing.faq.support.answer": "We offer 24/7 support and bank-level security for all your data. GDPR-compliant and ISO 27001 certified."
+  "pricing.faq.support.answer": "We offer 24/7 support and bank-level security for all your data. GDPR-compliant and ISO 27001 certified.",
+  "contact.title": "Contact us",
+  "contact.subtitle": "Book a demo or ask a question – we’ll get back quickly.",
+  "contact.name": "Name",
+  "contact.email": "Email",
+  "contact.company": "Company",
+  "contact.message": "Message",
+  "contact.submit": "Send",
+  "contact.mailtoNote": "We’ll open your email client with a draft to"
 };
 
 

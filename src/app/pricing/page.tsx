@@ -48,6 +48,9 @@ export default function PricingPage() {
         {/* Header */}
         <div className="relative overflow-hidden text-center mb-20">
           <div className="relative z-10">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl mb-6 shadow-2xl">
+              <Star className="w-12 h-12 text-slate-700" />
+            </div>
             <PageTitle subtitle={t('pricing.subtitle')}>{t('pricing.title')}</PageTitle>
           </div>
         </div>
@@ -95,8 +98,8 @@ export default function PricingPage() {
                     planKey === 'team' ? 'bg-gradient-to-r from-mint-600 to-teal-600 hover:from-mint-700 hover:to-teal-700' :
                     'bg-gradient-to-r from-coral-600 to-rose-600 hover:from-coral-700 hover:to-rose-700'
                   }`}
-                  onClick={planKey === 'free' ? () => (window.location.href = '/import') : () => handleSubscribe(planKey as 'team' | 'enterprise')}
-                  disabled={planKey !== 'free' && (!billingEnabled() || loading === planKey)}
+                  onClick={planKey === 'free' ? () => (window.location.href = '/import') : () => (window.location.href = '/contact')}
+                  disabled={loading === planKey}
                 >
                   {planKey === 'free' ? t('pricing.cta.free') : (!billingEnabled() ? t('pricing.cta.contact') : (loading === planKey ? t('pricing.cta.loading') : t('pricing.cta.subscribe')))}
                 </button>

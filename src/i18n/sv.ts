@@ -7,6 +7,7 @@ export const sv = {
   "nav.reports": "Rapporter",
   "nav.overview": "Översikt",
   "nav.pricing": "Priser",
+  "nav.contact": "Kontakt",
   "cta.getStarted": "Kom igång",
   "cta.tryDemo": "Prova demo",
   "hero.title": "Lönetransparens. Förenklad.",
@@ -391,7 +392,15 @@ export const sv = {
   "pricing.faq.billing.question": "Stöder ni fakturering?",
   "pricing.faq.billing.answer": "Ja, Enterprise-kunder kan få fakturering via email. Kontakta vår support för mer information.",
   "pricing.faq.support.question": "Support & Säkerhet",
-  "pricing.faq.support.answer": "Vi erbjuder 24/7 support och banknivå säkerhet för all din data. GDPR-kompatibel och ISO 27001-certifierad."
+  "pricing.faq.support.answer": "Vi erbjuder 24/7 support och banknivå säkerhet för all din data. GDPR-kompatibel och ISO 27001-certifierad.",
+  "contact.title": "Kontakta oss",
+  "contact.subtitle": "Boka demo eller ställ en fråga – vi återkommer snabbt.",
+  "contact.name": "Namn",
+  "contact.email": "E‑post",
+  "contact.company": "Företag",
+  "contact.message": "Meddelande",
+  "contact.submit": "Skicka",
+  "contact.mailtoNote": "Vi öppnar din e‑postklient med ett utkast till"
 };
 
 

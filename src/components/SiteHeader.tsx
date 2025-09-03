@@ -27,6 +27,7 @@ export function SiteHeader() {
           <Link href="/" className="px-3 py-2 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-colors duration-200">{t('nav.home')}</Link>
           <Link href="/overview" className="px-3 py-2 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-colors duration-200">{t('nav.overview')}</Link>
           <Link href="/import" className="px-3 py-2 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-colors duration-200">{t('nav.import')}</Link>
+          <Link href="/contact" className="px-3 py-2 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-colors duration-200">{t('nav.contact')}</Link>
           <Link href="/pricing" className="px-3 py-2 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-colors duration-200">{t('nav.pricing')}</Link>
           <LanguageToggle />
           <UserMenu />

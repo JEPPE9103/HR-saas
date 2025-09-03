@@ -143,8 +143,8 @@ export default function OverviewPage() {
         {/* Compact Header */}
         <div className="relative overflow-hidden text-center mb-12">
           <div className="relative z-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl mb-4 shadow-xl border border-white/20">
-              <BarChart3 className="w-8 h-8 text-slate-700" />
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl mb-6 shadow-2xl">
+              <BarChart3 className="w-12 h-12 text-slate-700" />
             </div>
             <PageTitle subtitle={<span>{t('overview.lastComputed')} {computedAt}</span>}>{t('overview.title')}</PageTitle>
           </div>
