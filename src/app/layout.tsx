@@ -17,18 +17,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "PayTransparency – Pay Equity. Simplified.",
-    template: "%s · PayTransparency",
+    default: "Noxheim – Pay Equity. Simplified.",
+    template: "%s · Noxheim",
   },
   description: "EU pay transparency demo – import, insights, and scenario simulation.",
   openGraph: {
-    title: "PayTransparency",
+    title: "Noxheim",
     description: "EU pay transparency demo – import, insights, and scenario simulation.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PayTransparency",
+    title: "Noxheim",
     description: "EU pay transparency demo – import, insights, and scenario simulation.",
   },
 };

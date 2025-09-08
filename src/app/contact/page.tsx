@@ -15,7 +15,7 @@ export default function ContactPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const subject = encodeURIComponent("PayTransparency demo request");
+    const subject = encodeURIComponent("Noxheim demo request");
     const body = encodeURIComponent(
       `${t('contact.name')}: ${name}\n${t('contact.email')}: ${email}\n${t('contact.company')}: ${company}\n\n${message}`
     );

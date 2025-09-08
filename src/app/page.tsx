@@ -217,7 +217,7 @@ export default function HomePage() {
         </div>
 
         <footer className="text-center text-sm text-slate-500 font-light">
-          © {new Date().getFullYear()} PayTransparency — {t('dashboard.euReady')}.
+          © {new Date().getFullYear()} Noxheim — {t('dashboard.euReady')}.
         </footer>
       </div>
     </div>
