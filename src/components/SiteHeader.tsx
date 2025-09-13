@@ -18,10 +18,9 @@ export function SiteHeader() {
     <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-white/90 backdrop-blur-sm shadow-sm">
       <div className="px-4 h-14 w-full flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-slate-600 to-slate-700 text-white font-medium">N</div>
+          <img src="/logo.png" alt="Noxheim" className="h-10 w-10 rounded-full object-contain" />
           <div className="text-lg font-semibold tracking-tight">
-            <span className="text-slate-800">Nox</span>
-            <span className="text-slate-600">heim</span>
+            <span className="bg-gradient-to-r from-fuchsia-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">Noxheim</span>
           </div>
           <span className="ml-3 hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ring-1 bg-emerald-50 text-emerald-700 ring-emerald-200">
             <CheckCircle2 className="h-3.5 w-3.5" /> EU Directive Ready

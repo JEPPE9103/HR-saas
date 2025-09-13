@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="border-t border-slate-200/50 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
         <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-r from-slate-600 to-slate-700 text-white text-xs font-semibold">N</div>
+          <img src="/logo.png" alt="Noxheim" className="h-8 w-8 rounded-full object-contain" />
           <span>© {new Date().getFullYear()} Noxheim</span>
         </div>
         <nav className="flex items-center gap-4">
