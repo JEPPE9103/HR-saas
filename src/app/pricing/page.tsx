@@ -96,7 +96,7 @@ export default function PricingPage() {
                 {planKey === 'team' && (
                   <div className="mb-4">
                     <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
-                      {t('pricing.saveYearly', { defaultValue: 'Save 20% yearly' })}
+                      {t('pricing.saveYearly')}
                     </span>
                   </div>
                 )}
