@@ -8,6 +8,7 @@ import { I18nProvider } from "@/providers/I18nProvider";
 import { SimulationDrawer } from "@/components/stubs";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OpenCopilotButton } from "@/components/OpenCopilotButton";
+import { Footer } from "@/components/ui/Footer";
 
 export default function ClientShell({ children }: { children: ReactNode }) {
   return (
@@ -16,6 +17,7 @@ export default function ClientShell({ children }: { children: ReactNode }) {
         <AuthProvider>
           <SiteHeader />
           <main className="container-pro py-10 md:py-12">{children}</main>
+          <Footer />
           {/* Legacy components moved to _quarantine - using stubs */}
           <SimulationDrawer />
           {/* Global AI Copilot */}

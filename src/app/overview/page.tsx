@@ -245,13 +245,22 @@ export default function OverviewPage() {
                         <h3 className="text-xl font-light text-slate-800 mb-6">{t('overview.suggestedActions.title')}</h3>
                         
                         <div className="space-y-3">
-                          <button className="w-full text-left text-sm text-slate-700 hover:text-coral-600 p-3 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium">
+                          <button 
+                            className="w-full text-left text-sm text-slate-700 hover:text-coral-600 p-3 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium"
+                            onClick={() => window.dispatchEvent(new CustomEvent('copilot:open', { detail: { message: '/analyze', send: true } }))}
+                          >
                             {t('overview.suggestedActions.reviewTopGaps')}
                           </button>
-                          <button className="w-full text-left text-sm text-slate-700 hover:text-coral-600 p-3 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium">
+                          <button 
+                            className="w-full text-left text-sm text-slate-700 hover:text-coral-600 p-3 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium"
+                            onClick={() => window.dispatchEvent(new CustomEvent('copilot:open', { detail: { message: '/trend', send: true } }))}
+                          >
                             {t('overview.suggestedActions.analyzeTrends')}
                           </button>
-                          <button className="w-full text-left text-sm text-slate-700 hover:text-coral-600 p-3 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium">
+                          <button 
+                            className="w-full text-left text-sm text-slate-700 hover:text-coral-600 p-3 rounded-xl hover:bg-white/50 transition-all duration-300 font-medium"
+                            onClick={() => window.dispatchEvent(new CustomEvent('copilot:open', { detail: { message: '/report', send: true } }))}
+                          >
                             {t('overview.suggestedActions.generateReport')}
                           </button>
                         </div>

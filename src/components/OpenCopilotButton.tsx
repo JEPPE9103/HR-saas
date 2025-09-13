@@ -20,6 +20,29 @@ export function OpenCopilotButton() {
   const [isLoading, setIsLoading] = useState(false);
   const [datasetId] = useState("demo-se"); // In production, get from context
   const panelRef = useRef<HTMLDivElement | null>(null);
+  
+  // Allow other components to open Copilot with a prefilled message
+  useEffect(() => {
+    function onOpenCopilot(e: Event) {
+      try {
+        const custom = e as CustomEvent<{ message?: string; send?: boolean }>;
+        const detail = custom.detail || {};
+        const nextMessage = typeof detail.message === 'string' ? detail.message : '';
+        setIsOpen(true);
+        if (nextMessage) {
+          setInput(nextMessage);
+          if (detail.send) {
+            // slight delay to ensure state update before sending
+            setTimeout(() => {
+              void sendDirect(nextMessage);
+            }, 0);
+          }
+        }
+      } catch {}
+    }
+    window.addEventListener('copilot:open', onOpenCopilot as EventListener);
+    return () => window.removeEventListener('copilot:open', onOpenCopilot as EventListener);
+  }, []);
   function sanitizeMarkdown(input: string): string {
     let s = input || "";
     // remove bold/italic/code markers
@@ -83,20 +106,16 @@ export function OpenCopilotButton() {
     try { sessionStorage.setItem(key, JSON.stringify(messages.slice(-50))); } catch {}
   }, [messages, datasetId, locale, isOpen]);
 
-  async function sendMessage() {
-    if (!input.trim() || isLoading) return;
-    
-    const userMessage = input.trim();
-    setInput("");
+  async function sendDirect(message: string) {
+    if (!message.trim() || isLoading) return;
+    const userMessage = message.trim();
     setIsLoading(true);
-    
     // Add user message
     setMessages(prev => [...prev, {
       role: "user",
       content: userMessage,
       timestamp: new Date()
     }]);
-
     try {
       const response = await fetch("/api/copilot/ask", {
         method: "POST",
@@ -120,7 +139,6 @@ export function OpenCopilotButton() {
         content: data?.text || data?.error || (response.status === 429 ? rateMsg : fallback),
         timestamp: new Date()
       }]);
-
     } catch (error) {
       setMessages(prev => [...prev, {
         role: "assistant",
@@ -130,6 +148,13 @@ export function OpenCopilotButton() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function sendMessage() {
+    if (!input.trim() || isLoading) return;
+    const userMessage = input.trim();
+    setInput("");
+    await sendDirect(userMessage);
   }
 
   function QuickCommand({ label, value, emoji }: { label: string; value: string; emoji: string }) {
@@ -255,7 +280,7 @@ export function OpenCopilotButton() {
                   <div className="bg-white border border-slate-200 rounded-2xl px-4 py-3">
                     <div className="flex items-center gap-2 text-slate-600">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="text-sm">AI tänker...</span>
+                      <span className="text-sm">{locale==='sv' ? 'AI tänker…' : 'AI is thinking…'}</span>
                     </div>
                   </div>
                 </div>
@@ -298,7 +323,7 @@ export function OpenCopilotButton() {
               </div>
               
               <p className="text-xs text-slate-500 mt-2 text-center">
-                💡 Prova: "Vilka avdelningar har störst lönegap?"
+                {locale==='sv' ? '💡 Prova: "Vilka avdelningar har störst lönegap?"' : '💡 Try: "Which departments have the largest gap?"'}
               </p>
             </div>
           </div>

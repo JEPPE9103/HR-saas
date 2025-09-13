@@ -62,6 +62,15 @@ export default function PricingPage() {
               key={planKey}
               className={`group relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl`}
             >
+              {/* Badge */}
+              {planKey === 'team' && (
+                <div className="absolute left-6 top-6 z-10">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-mint-600 to-teal-600 text-white shadow-md">
+                    {t('pricing.mostPopular') ?? 'Most popular'}
+                  </span>
+                </div>
+              )}
+
               <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl ${
                 planKey === 'starter' ? 'bg-gradient-to-br from-slate-200/20 to-slate-300/10' :
                 planKey === 'team' ? 'bg-gradient-to-br from-mint-200/20 to-teal-300/10' :
@@ -82,6 +91,15 @@ export default function PricingPage() {
                   <span className="text-5xl font-light text-slate-800">{`${plan.price.toLocaleString('sv-SE')} ${t('pricing.currency')}`}</span>
                   <span className="text-slate-600 font-light">{t('pricing.perMonth')}</span>
                 </div>
+
+                {/* Yearly save ribbon (visual only) */}
+                {planKey === 'team' && (
+                  <div className="mb-4">
+                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
+                      {t('pricing.saveYearly', { defaultValue: 'Save 20% yearly' })}
+                    </span>
+                  </div>
+                )}
               </div>
               <ul className="space-y-4 mb-8 relative z-10">
                 {plan.features.map((feature, index) => (
