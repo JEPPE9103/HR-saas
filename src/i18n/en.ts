@@ -355,6 +355,7 @@ export const en = {
   "pricing.title": "Simple and transparent pricing",
   "pricing.subtitle": "Choose the plan that best fits your company. All plans include a 14-day free trial.",
   "pricing.free.name": "Free",
+  "pricing.starter.name": "Starter",
   "pricing.free.price": "Free",
   "pricing.team.name": "Team",
   "pricing.enterprise.name": "Enterprise",

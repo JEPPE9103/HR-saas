@@ -1,40 +1,40 @@
 export const PRICING_PLANS = {
-  free: {
-    name: 'Free',
-    price: 0,
+  starter: {
+    name: 'Starter',
+    price: 199,
     features: [
       'Upp till 50 anställda',
-      'Grundläggande lönegapsanalys',
-      '1 rapport per månad',
-      'Email support',
+      'Import + översikt',
+      'AI-demoinblickar',
+      'E‑postsupport',
     ],
     limits: {
       maxEmployees: 50,
-      maxReports: 1,
-      maxDatasets: 1,
+      maxReports: 2,
+      maxDatasets: 2,
     },
   },
   team: {
     name: 'Team',
-    price: 2990,
+    price: 499,
     features: [
-      'Upp till 250 anställda',
+      '51–250 anställda',
       'AI-drivna insikter',
-      'Obegränsade rapporter',
+      'Upp till 5 rapporter/månad',
       'Slack/Teams integration',
       'Priority support',
     ],
     limits: {
       maxEmployees: 250,
-      maxReports: -1,
+      maxReports: 5,
       maxDatasets: 5,
     },
   },
   enterprise: {
     name: 'Enterprise',
-    price: 4990,
+    price: 1990,
     features: [
-      '250+ anställda',
+      '251+ anställda',
       'Avancerade AI-funktioner',
       'Compliance-specialist',
       'Dedikerad support',

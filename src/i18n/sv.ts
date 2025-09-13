@@ -350,6 +350,7 @@ export const sv = {
   "pricing.title": "Enkla och transparenta priser",
   "pricing.subtitle": "Välj den plan som passar ditt företag bäst. Alla planer inkluderar 14 dagars gratis provperiod.",
   "pricing.free.name": "Gratis",
+  "pricing.starter.name": "Starter",
   "pricing.free.price": "Gratis",
   "pricing.team.name": "Team",
   "pricing.enterprise.name": "Enterprise",

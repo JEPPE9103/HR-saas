@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useI18n } from "@/providers/I18nProvider";
 import { Brain, Loader2, X, Send, Sparkles } from "lucide-react";
 
 interface Message { 
@@ -12,12 +13,30 @@ interface Message {
 }
 
 export function OpenCopilotButton() {
+  const { t, locale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [datasetId] = useState("demo-se"); // In production, get from context
   const panelRef = useRef<HTMLDivElement | null>(null);
+  function sanitizeMarkdown(input: string): string {
+    let s = input || "";
+    // remove bold/italic/code markers
+    s = s.replace(/\*\*(.*?)\*\*/g, "$1");
+    s = s.replace(/\*(.*?)\*/g, "$1");
+    s = s.replace(/__(.*?)__/g, "$1");
+    s = s.replace(/`{1,3}([^`]+)`{1,3}/g, "$1");
+    // convert headings to plain text
+    s = s.replace(/^#{1,6}\s*/gm, "");
+    // links [text](url) -> text
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1");
+    // lists: keep bullets
+    s = s.replace(/^\s*[-*]\s+/gm, "• ");
+    // blockquotes
+    s = s.replace(/^>\s?/gm, "");
+    return s.trim();
+  }
 
   useEffect(() => {
     if (isOpen && panelRef.current) {
@@ -25,41 +44,44 @@ export function OpenCopilotButton() {
     }
   }, [isOpen, messages]);
 
-  // Add welcome message when first opened
+  // Welcome and restore history when panel opens
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      setMessages([{
-        role: "assistant",
-        content: `👋 **Hej! Jag är din AI-assistent för lönetransparens!**
+    if (!isOpen) return;
+    const key = `copilot_${datasetId}_${locale}`;
+    try {
+      const saved = sessionStorage.getItem(key);
+      if (saved) {
+        setMessages(JSON.parse(saved));
+        return;
+      }
+    } catch {}
+    if (messages.length === 0) {
+      const welcome = locale === 'sv'
+        ? `👋 **Hej! Jag är din AI‑copilot för lönetransparens.**
 
-🚀 **Vad kan jag hjälpa dig med?**
+🔍 Analys: /analyze • /recommend • /trend • /learn
+🎯 Åtgärder: /action • /simulate • /monitor • /dashboard
+📄 Export: /report • /alerts
 
-**🔍 Analys & Insikter:**
-• /analyze - Djup AI-analys av era data
-• /recommend - Konkreta åtgärdsförslag  
-• /trend - Prediktiv trendanalys
-• /learn - Se vad AI har lärt sig
+💡 Exempel: "Vilka avdelningar har störst lönegap?"`
+        : `👋 **Hi! I’m your pay equity copilot.**
 
-**🎯 Planering & Åtgärder:**
-• /action - Handlingsplan med milstolpar
-• /simulate - Testa olika scenarier
-• /monitor - Sätt upp AI-övervakning
-• /dashboard - Live översikt
+🔍 Analyze: /analyze • /recommend • /trend • /learn
+🎯 Actions: /action • /simulate • /monitor • /dashboard
+📄 Exports: /report • /alerts
 
-**📊 Övervakning & Varningar:**
-• /alerts - Konfigurera varningar
-• /report - Generera rapporter
-
-**💡 Prova att skriva:**
-"Vilka avdelningar har störst lönegap?"
-"Skapa en handlingsplan för att minska gapet"
-"Vad händer om vi ökar löner med 5%?"
-
-🎯 **AI-tip:** Jag blir smartare ju mer ni använder mig och kan identifiera mönster i era data!`,
-        timestamp: new Date()
-      }]);
+💡 Try: "Which departments have the largest gap?"`;
+      setMessages([{ role: "assistant", content: welcome, timestamp: new Date() }]);
     }
-  }, [isOpen, messages.length]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, locale]);
+
+  // Persist session messages per dataset/locale
+  useEffect(() => {
+    if (!isOpen) return;
+    const key = `copilot_${datasetId}_${locale}`;
+    try { sessionStorage.setItem(key, JSON.stringify(messages.slice(-50))); } catch {}
+  }, [messages, datasetId, locale, isOpen]);
 
   async function sendMessage() {
     if (!input.trim() || isLoading) return;
@@ -78,27 +100,31 @@ export function OpenCopilotButton() {
     try {
       const response = await fetch("/api/copilot/ask", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "x-locale": locale,
+          "x-tenant-id": datasetId,
+        },
         body: JSON.stringify({ 
           sessionId: "local", 
           datasetId, 
           message: userMessage 
         }),
       });
-      
       const data = await response.json();
-      
+      const fallback = locale === 'sv' ? "Tyvärr kunde jag inte svara just nu. Försök igen!" : "Sorry, I couldn’t answer now. Please try again.";
+      const rateMsg = locale === 'sv' ? "För många förfrågningar. Försök igen om en minut." : "Too many requests. Try again in a minute.";
       // Add AI response
-      setMessages(prev => [...prev, {
+      setMessages(prev => [...prev.slice(-49), {
         role: "assistant",
-        content: data.text || "Tyvärr kunde jag inte svara just nu. Försök igen!",
+        content: data?.text || data?.error || (response.status === 429 ? rateMsg : fallback),
         timestamp: new Date()
       }]);
-      
+
     } catch (error) {
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "❌ Ett fel uppstod. Kontrollera din internetanslutning och försök igen.",
+        content: locale === 'sv' ? "❌ Ett fel uppstod. Kontrollera din internetanslutning och försök igen." : "❌ An error occurred. Check your connection and try again.",
         timestamp: new Date()
       }]);
     } finally {
@@ -174,7 +200,7 @@ export function OpenCopilotButton() {
                   <Brain className="h-6 w-6" />
                   <div>
                     <h3 className="font-semibold text-lg">AI Copilot</h3>
-                    <p className="text-blue-100 text-sm">Lönetransparens-assistent</p>
+                    <p className="text-blue-100 text-sm">{locale==='sv' ? 'Lönetransparens‑assistent' : 'Pay equity assistant'}</p>
                   </div>
                 </div>
                 <button
@@ -200,7 +226,7 @@ export function OpenCopilotButton() {
                         : "bg-white border border-slate-200 text-slate-800"
                     }`}>
                       <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                        {message.content}
+                        {sanitizeMarkdown(message.content)}
                       </div>
                       <div className={`text-xs mt-2 ${
                         message.role === "user" ? "text-blue-100" : "text-slate-500"
@@ -241,15 +267,15 @@ export function OpenCopilotButton() {
               <div className="mb-3">
                 <p className="text-xs text-slate-600 mb-2 font-medium flex items-center gap-2">
                   <Sparkles className="h-3 w-3" />
-                  Snabbkommandon
+                  {locale === 'sv' ? 'Snabbkommandon' : 'Quick commands'}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <QuickCommand label="Analysera" value="/analyze" emoji="🔍" />
-                  <QuickCommand label="Rekommendera" value="/recommend" emoji="🎯" />
-                  <QuickCommand label="Trend" value="/trend" emoji="📈" />
-                  <QuickCommand label="Handlingsplan" value="/action" emoji="📋" />
-                  <QuickCommand label="Övervaka" value="/monitor" emoji="📊" />
-                  <QuickCommand label="Lära" value="/learn" emoji="🧠" />
+                  <QuickCommand label={locale==='sv'?'Analysera':'Analyze'} value="/analyze" emoji="🔍" />
+                  <QuickCommand label={locale==='sv'?'Rekommendera':'Recommend'} value="/recommend" emoji="🎯" />
+                  <QuickCommand label={locale==='sv'?'Trend':'Trend'} value="/trend" emoji="📈" />
+                  <QuickCommand label={locale==='sv'?'Handlingsplan':'Action plan'} value="/action" emoji="📋" />
+                  <QuickCommand label={locale==='sv'?'Övervaka':'Monitor'} value="/monitor" emoji="📊" />
+                  <QuickCommand label={locale==='sv'?'Lära':'Learn'} value="/learn" emoji="🧠" />
                 </div>
               </div>
 
@@ -258,8 +284,8 @@ export function OpenCopilotButton() {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ställ en fråga eller använd kommandon..."
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                  placeholder={locale==='sv' ? 'Ställ en fråga eller använd kommandon...' : 'Ask a question or use a command...'}
+                  onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }}
                   className="flex-1"
                 />
                 <Button

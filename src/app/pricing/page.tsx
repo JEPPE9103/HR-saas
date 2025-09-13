@@ -26,16 +26,16 @@ export default function PricingPage() {
 
   const getPlanIcon = (plan: string) => {
     switch (plan) {
-      case 'free': return <Check className="h-6 w-6" />;
+      case 'starter': return <Star className="h-6 w-6" />;
       case 'team': return <Zap className="h-6 w-6" />;
       case 'enterprise': return <Crown className="h-6 w-6" />;
-      default: return <Check className="h-6 w-6" />;
+      default: return <Star className="h-6 w-6" />;
     }
   };
 
   const getPlanColor = (plan: string) => {
     switch (plan) {
-      case 'free': return 'border-gray-200 bg-white';
+      case 'starter': return 'border-gray-200 bg-white';
       case 'team': return 'border-blue-500 bg-blue-50';
       case 'enterprise': return 'border-purple-500 bg-purple-50';
       default: return 'border-gray-200 bg-white';
@@ -63,14 +63,14 @@ export default function PricingPage() {
               className={`group relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl`}
             >
               <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl ${
-                planKey === 'free' ? 'bg-gradient-to-br from-slate-200/20 to-slate-300/10' :
+                planKey === 'starter' ? 'bg-gradient-to-br from-slate-200/20 to-slate-300/10' :
                 planKey === 'team' ? 'bg-gradient-to-br from-mint-200/20 to-teal-300/10' :
                 'bg-gradient-to-br from-coral-200/20 to-rose-300/10'
               }`} />
               <div className="text-center relative z-10">
                 <div className="flex justify-center mb-6">
                   <div className={`p-4 rounded-2xl ${
-                    planKey === 'free' ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700' :
+                    planKey === 'starter' ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-slate-700' :
                     planKey === 'team' ? 'bg-gradient-to-br from-mint-100 to-teal-200 text-teal-700' :
                     'bg-gradient-to-br from-coral-100 to-rose-200 text-coral-700'
                   }`}>
@@ -79,8 +79,8 @@ export default function PricingPage() {
                 </div>
                 <h3 className="text-2xl font-light text-slate-800 mb-4 tracking-tight">{t(`pricing.${planKey}.name`)}</h3>
                 <div className="mb-6">
-                  <span className="text-5xl font-light text-slate-800">{plan.price === 0 ? t('pricing.free.price') : `${plan.price.toLocaleString('sv-SE')} ${t('pricing.currency')}`}</span>
-                  {plan.price > 0 && <span className="text-slate-600 font-light">{t('pricing.perMonth')}</span>}
+                  <span className="text-5xl font-light text-slate-800">{`${plan.price.toLocaleString('sv-SE')} ${t('pricing.currency')}`}</span>
+                  <span className="text-slate-600 font-light">{t('pricing.perMonth')}</span>
                 </div>
               </div>
               <ul className="space-y-4 mb-8 relative z-10">
@@ -94,14 +94,14 @@ export default function PricingPage() {
               <div className="text-center relative z-10">
                 <button
                   className={`w-full rounded-2xl py-4 font-medium transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-white ${
-                    planKey === 'free' ? 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800' :
+                    planKey === 'starter' ? 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800' :
                     planKey === 'team' ? 'bg-gradient-to-r from-mint-600 to-teal-600 hover:from-mint-700 hover:to-teal-700' :
                     'bg-gradient-to-r from-coral-600 to-rose-600 hover:from-coral-700 hover:to-rose-700'
                   }`}
-                  onClick={planKey === 'free' ? () => (window.location.href = '/import') : () => (window.location.href = '/contact')}
+                  onClick={() => (window.location.href = '/contact')}
                   disabled={loading === planKey}
                 >
-                  {planKey === 'free' ? t('pricing.cta.free') : (!billingEnabled() ? t('pricing.cta.contact') : (loading === planKey ? t('pricing.cta.loading') : t('pricing.cta.subscribe')))}
+                  {t('pricing.cta.contact')}
                 </button>
               </div>
             </div>

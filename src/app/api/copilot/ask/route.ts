@@ -26,6 +26,15 @@ async function analyzeContext(datasetId: string, message: string) {
   }
 }
 
+function getLocaleFromRequest(req: NextRequest): "sv"|"en" {
+  const h = req.headers.get("x-locale") || req.headers.get("accept-language") || "en";
+  return h.toLowerCase().startsWith("sv") ? "sv" : "en";
+}
+
+function tr(locale: "sv"|"en", sv: string, en: string){
+  return locale === "sv" ? sv : en;
+}
+
 function analyzeIntent(message: string, context: any) {
   const lower = message.toLowerCase();
   
@@ -54,46 +63,79 @@ function analyzeIntent(message: string, context: any) {
   return "general_inquiry";
 }
 
-function generateProactiveSuggestions(context: any, intent: string) {
-  const suggestions = [];
-  
-  // Context-aware suggestions
+function generateProactiveSuggestions(context: any, intent: string, locale: 'sv'|'en') {
+  const S = (sv: string, en: string) => (locale === 'sv' ? sv : en);
+  const suggestions: string[] = [];
+
   if (context.criticalIssues > 0) {
-    suggestions.push("🚨 **KRITISKT:** Ni har avdelningar med gap >10%. Använd /action för omedelbar handlingsplan!");
+    suggestions.push(S(
+      "🚨 KRITISKT: Avdelningar med gap >10%. Använd /action för omedelbar plan!",
+      "🚨 CRITICAL: Departments with gap >10%. Use /action for an immediate plan!"
+    ));
   }
-  
   if (context.moderateIssues > 0) {
-    suggestions.push("⚠️ **VIKTIGT:** Ni har avdelningar med gap 5-10%. Använd /recommend för åtgärdsförslag.");
+    suggestions.push(S(
+      "⚠️ VIKTIGT: Gap 5–10%. Använd /recommend för åtgärdsförslag.",
+      "⚠️ IMPORTANT: Gaps 5–10%. Use /recommend for actions."
+    ));
   }
-  
   if (context.isHealthy) {
-    suggestions.push("✅ **BRA JOBBAT:** Era gap är inom EU-riktlinjer! Använd /monitor för att behålla detta.");
+    suggestions.push(S(
+      "✅ BRA JOBBAT: Gap inom EU-riktlinjer. Använd /monitor för att behålla nivå.",
+      "✅ WELL DONE: Gaps within EU guardrails. Use /monitor to maintain."
+    ));
   }
-  
-  // Intent-aware suggestions
-  if (intent === "gap_analysis") {
-    suggestions.push("💡 **TIP:** Använd /simulate för att testa olika scenarier innan ni implementerar åtgärder.");
+  if (intent === 'gap_analysis') {
+    suggestions.push(S(
+      "💡 Tips: Testa /simulate innan åtgärder.",
+      "💡 Tip: Try /simulate before taking actions."
+    ));
   }
-  
-  if (intent === "simulation") {
-    suggestions.push("💡 **TIP:** Efter simulering, använd /action för att skapa en handlingsplan baserad på resultaten.");
+  if (intent === 'simulation') {
+    suggestions.push(S(
+      "💡 Tips: Efter simulering, skapa plan med /action.",
+      "💡 Tip: After simulation, create a plan with /action."
+    ));
   }
-  
-  if (intent === "recommendations") {
-    suggestions.push("💡 **TIP:** Använd /monitor för att spåra effekten av implementerade åtgärder.");
+  if (intent === 'recommendations') {
+    suggestions.push(S(
+      "💡 Tips: Följ upp effekten i /monitor.",
+      "💡 Tip: Track impact in /monitor."
+    ));
   }
-  
   return suggestions;
 }
 
 const Body = z.object({
-  sessionId: z.string(),
-  datasetId: z.string(),
-  message: z.string(),
+  sessionId: z.string().min(1).max(128),
+  datasetId: z.string().min(1).max(128),
+  message: z.string().min(1).max(2000),
 });
+
+// Simple in-memory rate limit (per tenant) – for demo only
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+function checkRateLimit(key: string): boolean {
+  const now = Date.now();
+  const windowMs = 60 * 1000; // 1 minute
+  const maxRequests = 30; // 30 req/min per tenant
+  const cur = rateLimitStore.get(key);
+  if (!cur || now > cur.resetTime) {
+    rateLimitStore.set(key, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+  if (cur.count >= maxRequests) return false;
+  cur.count++;
+  return true;
+}
 
 export async function POST(req: NextRequest) {
   const { sessionId, datasetId, message } = Body.parse(await req.json());
+  const locale = getLocaleFromRequest(req);
+  const tenantId = req.headers.get('x-tenant-id') || datasetId || 'default';
+  if (!checkRateLimit(`copilot:${tenantId}`)) {
+    const msg = locale === 'sv' ? 'För många förfrågningar. Försök igen om en minut.' : 'Too many requests. Try again in a minute.';
+    return NextResponse.json({ error: msg }, { status: 429 });
+  }
   
   // Advanced AI with context understanding, pattern recognition, and proactive intelligence
   const lower = message.toLowerCase();
@@ -105,10 +147,10 @@ export async function POST(req: NextRequest) {
   const intent = analyzeIntent(message, context);
   
   // Proactive suggestions based on context and patterns
-  const suggestions = generateProactiveSuggestions(context, intent);
+  const suggestions = generateProactiveSuggestions(context, intent, locale);
   
   // Proactive analysis commands with context awareness
-  if (lower.includes("gap") || lower.includes("gap") || lower.startsWith("/gap")) {
+  if (lower.includes("gap") || lower.startsWith("/gap")) {
     const gaps = await listTopGaps(datasetId, 5);
     const topGap = gaps[0];
     
@@ -131,8 +173,9 @@ export async function POST(req: NextRequest) {
       urgencyMessage = `\n\n✅ **BRA JOBBAT:** Era gap är inom EU-riktlinjer (<2%)!`;
     }
     
-    const response = `${urgencyEmoji} **Lönegap Analys (${urgencyLevel.toUpperCase()}):**
-    
+    const response = locale === "sv"
+      ? `${urgencyEmoji} **Lönegap Analys (${urgencyLevel.toUpperCase()}):**
+      
 📊 **Topp 5 gap:**
 ${gaps.map((g, i) => `${i + 1}. ${g.role}: ${g.gapPercent.toFixed(1)}% (${g.n} anställda)`).join('\n')}
 
@@ -142,26 +185,42 @@ ${gaps.map((g, i) => `${i + 1}. ${g.role}: ${g.gapPercent.toFixed(1)}% (${g.n} a
 • Total påverkan: ${gaps.reduce((sum, g) => sum + g.n, 0)} anställda
 
 💡 **AI-rekommendationer:**
-• **${topGap.role}** har störst gap (${topGap.gapPercent.toFixed(1)}%) - prioritera denna avdelning
-• Analysera varför gapet är så stort i ${topGap.role}
-• Överväg lönejusteringar för att minska gapet
-• Implementera transparent lönespann för framtida anställningar
+• **${topGap.role}** har störst gap (${topGap.gapPercent.toFixed(1)}%)
+• Analysera orsaker och överväg lönejusteringar
+• Inför transparenta lönespann
 
 ${urgencyMessage}
 
 🎯 **Nästa steg:** 
-• /simulate för att testa olika scenarier
-• /analyze för djupare analys
-• /recommend för specifika åtgärdsförslag
-• /action för handlingsplan om ${urgencyLevel === 'critical' ? 'KRITISKT' : 'behövs'}`;
+• /simulate • /analyze • /recommend • /action`
+      : `${urgencyEmoji} **Pay Gap Analysis (${urgencyLevel.toUpperCase()}):**
+
+📊 **Top 5 gaps:**
+${gaps.map((g, i) => `${i + 1}. ${g.role}: ${g.gapPercent.toFixed(1)}% (${g.n} employees)`).join('\n')}
+
+📈 **Overall status:**
+• Avg gap: ${context.totalGap.toFixed(1)}%
+• EU target: <2% (you are ${context.totalGap > 2 ? 'above' : 'below'} target)
+• Total impacted: ${gaps.reduce((sum, g) => sum + g.n, 0)} employees
+
+💡 **AI suggestions:**
+• **${topGap.role}** shows the largest gap (${topGap.gapPercent.toFixed(1)}%) – prioritize
+• Analyze drivers and consider pay adjustments
+• Implement transparent salary bands
+
+${urgencyLevel === 'critical' ? '🚨 Critical areas require immediate action.' : ''}
+
+🎯 **Next steps:** 
+• /simulate • /analyze • /recommend • /action`;
 
     return NextResponse.json({ text: response });
   }
   
   if (lower.includes("outlier") || lower.includes("avvikelse") || lower.startsWith("/outliers")) {
     const o = await listOutliers(datasetId, 10);
-    const response = `🚨 **Outlier Analys:**
-    
+    const response = locale === 'sv'
+      ? `🚨 **Outlier Analys:**
+      
 📈 **Hittade ${o.items.length} outliers (|z|>2):**
 • Medianlön: ${o.med.toFixed(0)} SEK
 • Outliers kan indikera löneojämlikhet eller specialfall
@@ -173,15 +232,30 @@ ${urgencyMessage}
 
 🎯 **Nästa steg:**
 • /analyze för djupare outlier-analys
-• /simulate för att testa outlier-hantering`;
+• /simulate för att testa outlier-hantering`
+      : `🚨 **Outlier Analysis:**
+
+📈 **Found ${o.items.length} outliers (|z|>2):**
+• Median pay: ${o.med.toFixed(0)} SEK
+• Outliers can indicate inequity or special cases
+
+💡 **Recommendations:**
+• Review outliers to understand drivers
+• Check if outliers are justified (e.g., specialist skills)
+• Consider caps for extreme values
+
+🎯 **Next:**
+• /analyze for deeper analysis
+• /simulate to test handling`;
 
     return NextResponse.json({ text: response });
   }
   
   if (lower.includes("simulate") || lower.includes("simulera") || lower.startsWith("/simulate")) {
     const sim = await runSimulation({ datasetId, method: "percentageDelta", value: 5 });
-    const response = `🎯 **Simulering Resultat:**
-    
+    const response = locale === 'sv'
+      ? `🎯 **Simulering Resultat:**
+      
 📊 **Effekt av 5% löneökning:**
 • Påverkade anställda: ${sim.impacted}
 • Nytt gap: ${sim.gapPercent.toFixed(1)}%
@@ -193,7 +267,21 @@ ${urgencyMessage}
 
 🎯 **Nästa steg:**
 • /scenario för att testa andra scenarier
-• /report för att exportera resultat`;
+• /report för att exportera resultat`
+      : `🎯 **Simulation Result:**
+
+📊 **Effect of 5% pay increase:**
+• Impacted employees: ${sim.impacted}
+• New gap: ${sim.gapPercent.toFixed(1)}%
+• Budget delta: +${sim.budgetDelta.annual.toFixed(0)} SEK/year
+
+💡 **Insights:**
+• ${sim.gapPercent < 5 ? '✅ Gap is now within EU guardrails (<5%)' : '⚠️ Gap still above guardrails'}
+• Cost per employee: ${(sim.budgetDelta.annual / sim.impacted).toFixed(0)} SEK/year
+
+🎯 **Next:**
+• /scenario to test others
+• /report to export results`;
 
     return NextResponse.json({ text: response });
   }
@@ -202,64 +290,69 @@ ${urgencyMessage}
   if (lower.includes("analyze") || lower.includes("analysera") || lower.startsWith("/analyze")) {
     const gaps = await listTopGaps(datasetId, 3);
     const outliers = await listOutliers(datasetId, 5);
-    const response = `🧠 **AI Djupanalys:**
-    
+    const response = tr(locale,
+`🧠 **AI Djupanalys:**
+
 📊 **Huvudfynd:**
 • ${gaps[0].role} har störst gap (${gaps[0].gapPercent.toFixed(1)}%)
 • ${outliers.items.length} löneoutliers identifierade
 • Genomsnittlig gap: ${(gaps.reduce((sum, g) => sum + g.gapPercent, 0) / gaps.length).toFixed(1)}%
 
-🔍 **AI-identifierade mönster:**
-• ${gaps[0].role} visar konsekvent höga gap över tid
-• Outliers koncentrerade i ${gaps[0].role} avdelningen
-• Potentiell lönekompression mellan juniora och seniora roller
+🔍 **Mönster:**
+• ${gaps[0].role} visar konsekvent höga gap
+• Outliers koncentrerade i ${gaps[0].role}
+• Lönekompression mellan juniora och seniora
 
-💡 **Strategiska rekommendationer:**
-1. **Kortsiktigt:** Fokusera på ${gaps[0].role} för snabbast effekt
-2. **Mellansiktigt:** Implementera transparent lönespann
-3. **Långsiktigt:** Bygg AI-driven löneövervakning
+🎯 **Nästa steg:** /recommend • /trend • /action`,
+`🧠 **AI Deep Analysis:**
 
-🎯 **Nästa steg:**
-• /recommend för specifika åtgärder
-• /trend för trendanalys
-• /action för handlingsplan`;
+📊 **Key findings:**
+• ${gaps[0].role} shows highest gap (${gaps[0].gapPercent.toFixed(1)}%)
+• ${outliers.items.length} pay outliers identified
+• Avg gap: ${(gaps.reduce((sum, g) => sum + g.gapPercent, 0) / gaps.length).toFixed(1)}%
+
+🔍 **Patterns:**
+• Persistent gaps in ${gaps[0].role}
+• Outliers concentrated in ${gaps[0].role}
+• Possible pay compression junior↔senior
+
+🎯 **Next:** /recommend • /trend • /action`);
 
     return NextResponse.json({ text: response });
   }
   
   if (lower.includes("recommend") || lower.includes("rekommendera") || lower.startsWith("/recommend")) {
     const gaps = await listTopGaps(datasetId, 3);
-    const response = `🎯 **AI Åtgärdsrekommendationer:**
-    
-🚀 **Prioriterade åtgärder:**
-    
-**1. ${gaps[0].role} (${gaps[0].gapPercent.toFixed(1)}% gap)**
-• Implementera transparent lönespann
-• Öka löner för juniora ${gaps[0].role} med 8-12%
-• Uppskattad kostnad: +${(gaps[0].n * 50000).toFixed(0)} SEK/år
-• Förväntad effekt: Gap minskar till ${Math.max(2, gaps[0].gapPercent * 0.6).toFixed(1)}%
+    const response = tr(locale,
+`🎯 **AI Åtgärdsrekommendationer:**
 
-**2. ${gaps[1].role} (${gaps[1].gapPercent.toFixed(1)}% gap)**
-• Granska löneband och nivåer
-• Standardisera lönesättning för nya anställningar
-• Uppskattad kostnad: +${(gaps[1].n * 30000).toFixed(0)} SEK/år
+1) ${gaps[0].role} (${gaps[0].gapPercent.toFixed(1)}%)
+• Transparenta lönespann
+• +8–12% för juniora
 
-**3. Övergripande strategi**
-• Implementera månatlig AI-övervakning
-• Sätt mål: Minska totalt gap till <3% inom 12 månader
-• Skapa lönetransparens-dashboard för ledning
+2) ${gaps[1].role} (${gaps[1].gapPercent.toFixed(1)}%)
+• Granska band • standardisera nyanställning
 
-💡 **AI-insikt:** Fokusera på ${gaps[0].role} först - det ger störst ROI på lönejusteringar.
+🎯 **Mål:** Totalt gap <3% inom 12 månader
 
-🎯 **Nästa steg:**
-• /simulate för att testa rekommendationerna
-• /action för att skapa handlingsplan
-• /report för att exportera analys`;
+**Nästa:** /simulate • /action • /report`,
+`🎯 **AI Recommendations:**
+
+1) ${gaps[0].role} (${gaps[0].gapPercent.toFixed(1)}%)
+• Transparent salary bands
+• +8–12% for juniors
+
+2) ${gaps[1].role} (${gaps[1].gapPercent.toFixed(1)}%)
+• Review bands • standardize hiring
+
+🎯 **Goal:** Total gap <3% within 12 months
+
+**Next:** /simulate • /action • /report`);
 
     return NextResponse.json({ text: response });
   }
   
-  if (lower.includes("trend") || lower.includes("trend") || lower.startsWith("/trend")) {
+  if (lower.includes("trend") || lower.startsWith("/trend")) {
     const response = `📈 **AI Trendanalys:**
     
 🔮 **Prediktiv analys baserat på historisk data:**
@@ -288,12 +381,32 @@ ${urgencyMessage}
 • /simulate för att testa olika scenarier
 • /monitor för att sätta upp AI-övervakning`;
 
-    return NextResponse.json({ text: response });
+    const en = `📈 **Trend Analysis:**
+
+🔮 **Predictive analysis:**
+
+Short (3 mo):
+• No action: 8.5% (+0.3%)
+• With actions: 4.2% (-4.0%)
+
+Mid (6 mo):
+• No action: 9.1% (+0.8%)
+• With actions: 2.8% (-5.4%)
+
+Long (12 mo):
+• No action: 10.2% (+1.9%)
+• With actions: 1.9% (-6.3%)
+
+🎯 **Decisions:** M3, M6, M9 milestones
+
+Next: /action • /simulate`;
+    return NextResponse.json({ text: locale==='sv' ? response : en });
   }
   
   if (lower.includes("action") || lower.includes("åtgärd") || lower.startsWith("/action")) {
     const gaps = await listTopGaps(datasetId, 3);
-    const response = `📋 **AI Handlingsplan:**
+    const response = tr(locale,
+`📋 **AI Handlingsplan:**
     
 🎯 **Månad 1-3: Grundläggande åtgärder**
 • **Vecka 1-2:** Analysera ${gaps[0].role} lönespann
@@ -320,8 +433,16 @@ ${urgencyMessage}
 🎯 **Nästa steg:**
 • /monitor för att sätta upp AI-övervakning
 • /simulate för att testa handlingsplanen
-• /report för att exportera hela planen`;
+• /report för att exportera hela planen`,
+`📋 **AI Action Plan:**
 
+Months 1–3: analyze ${gaps[0].role}, policy, first adjustments
+Months 4–6: evaluate, scale, monitoring
+Months 7–12: optimize, long‑term oversight
+
+Milestones: M3 6.5% • M6 4.2% • M12 1.9%
+
+Next: /monitor • /simulate • /report`);
     return NextResponse.json({ text: response });
   }
   
@@ -367,12 +488,22 @@ ${urgencyMessage}
 • /report för att exportera övervakningsplan
 • /learn för att se vad AI har lärt sig`;
 
-    return NextResponse.json({ text: response });
+    const en = `📊 **Monitoring Setup:**
+
+Daily: gap, outliers, trend, anomalies
+Weekly: gap by dept, action effectiveness, budget, ROI
+Monthly: predictions, recommendations, risk, benchmarks
+
+Alerts: gap >5%, new outliers, trend breaks, budget thresholds
+
+Next: /dashboard • /alerts • /report`;
+    return NextResponse.json({ text: locale==='sv' ? response : en });
   }
   
   if (lower.includes("report") || lower.includes("rapport") || lower.startsWith("/report")) {
     const pdf = await exportPDF(datasetId);
-    const response = `📄 **Rapport Genererad:**
+    const response = tr(locale,
+`📄 **Rapport Genererad:**
     
 ✅ **AI-analys exporterad till PDF:**
 • Fil: ${pdf.url}
@@ -391,14 +522,23 @@ ${urgencyMessage}
 🎯 **Nästa steg:**
 • Dela rapporten med ledning
 • /presentation för att skapa presentation
-• /followup för att schemalägga uppföljning`;
-    
+• /followup för att schemalägga uppföljning`,
+`📄 **Report Generated:**
+
+✅ Exported to PDF:
+• File: ${pdf.url}
+• Executive summary + details
+
+Includes: gap summary, issues, actions, costs, plan
+
+Next: share, /presentation, /followup`);
     return NextResponse.json({ text: response });
   }
   
   // New advanced commands
   if (lower.includes("learn") || lower.includes("lära") || lower.startsWith("/learn")) {
-    const response = `🧠 **AI Learning & Insights:**
+    const response = tr(locale,
+`🧠 **AI Learning & Insights:**
     
 📚 **Vad jag har lärt mig från era data:**
     
@@ -423,13 +563,26 @@ ${urgencyMessage}
 🎯 **Nästa steg:**
 • /analyze för djupare analys
 • /recommend för åtgärdsförslag
-• /monitor för att spåra framsteg`;
-    
+• /monitor för att spåra framsteg`,
+`🧠 **AI Learning & Insights:**
+
+Patterns:
+• ${context.gaps?.[0]?.role || 'N/A'} consistently high gap
+• Pay compression
+• Seasonality
+
+Recommendations:
+• Focus ${context.gaps?.[0]?.role || 'priority areas'}
+• Salary bands
+• Monitoring
+
+Next: /analyze • /recommend • /monitor`);
     return NextResponse.json({ text: response });
   }
   
   if (lower.includes("dashboard") || lower.includes("panel") || lower.startsWith("/dashboard")) {
-    const response = `📊 **AI Dashboard & Övervakning:**
+    const response = tr(locale,
+`📊 **AI Dashboard & Övervakning:**
     
 🎛️ **Live Dashboard:**
     
@@ -454,13 +607,21 @@ ${urgencyMessage}
 🎯 **Nästa steg:**
 • /monitor för att konfigurera övervakning
 • /alerts för att sätta upp varningar
-• /report för att exportera data`;
-    
+• /report för att exportera data`,
+
+`📊 **AI Dashboard & Monitoring:**
+
+Live: gaps by dept, 30‑day trend, outliers, budget
+KPIs: gap reduction, action effectiveness, ROI
+Insights: recommendations, risk, predictions
+
+Next: /monitor • /alerts • /report`);
     return NextResponse.json({ text: response });
   }
   
   if (lower.includes("alerts") || lower.includes("varningar") || lower.startsWith("/alerts")) {
-    const response = `🔔 **AI Alert System:**
+    const response = tr(locale,
+`🔔 **AI Alert System:**
     
 ⚙️ **Konfigurera varningar:**
     
@@ -490,8 +651,18 @@ ${urgencyMessage}
 🎯 **Nästa steg:**
 • /monitor för att aktivera övervakning
 • /dashboard för att se live-data
-• /test för att testa varningssystemet`;
-    
+• /test för att testa varningssystemet`,
+
+`🔔 **AI Alert System:**
+
+Configure:
+• Gap alerts: >5%, >10%, trend up 3 months
+• Budget: 80%, 95%, ROI drop
+• Outliers: new, growing, impactful
+
+Delivery: Email, Slack, SMS, Dashboard
+
+Next: /monitor • /dashboard • /report`);
     return NextResponse.json({ text: response });
   }
   
@@ -509,7 +680,8 @@ ${urgencyMessage}
       statusMessage = `\n\n✅ **BRA JOBBAT:** Era lönegap är inom EU-riktlinjer (<2%)!`;
     }
     
-    const response = `👋 **Hej! Jag är din AI-assistent för lönetransparens!**
+    const response = tr(locale,
+`👋 **Hej! Jag är din AI-assistent för lönetransparens!**
     
 📊 **Jag har analyserat era data:**
 • ${sum.employees} anställda
@@ -534,8 +706,16 @@ ${statusMessage}
 "Vad händer om vi ökar löner med 5%?"
 "Skapa en handlingsplan för att minska gapet"
 
-💬 **AI-tip:** Jag blir smartare ju mer ni använder mig och kan identifiera mönster i era data!`;
+💬 **AI-tip:** Jag blir smartare ju mer ni använder mig och kan identifiera mönster i era data!`,
+`👋 **Hi! I’m your pay equity copilot.**
 
+📊 **Quick status:**
+• Employees: ${sum.employees}
+• Roles: ${sum.roles}
+• Avg gap: ${context.totalGap.toFixed(1)}% (EU target <2%)
+
+💡 **Try:** /analyze • /recommend • /trend • /action • /simulate • /monitor
+`);
     return NextResponse.json({ text: response });
   }
   
@@ -629,9 +809,11 @@ ${statusMessage}
   const sum = await getSummary(datasetId);
   
   // Add proactive suggestions based on context
-  const proactiveSuggestions = suggestions.length > 0 ? `\n\n🚀 **PROAKTIVA FÖRSLAG:**\n${suggestions.join('\n')}` : '';
+  const proactiveLabel = locale==='sv' ? 'Proaktiva förslag' : 'Proactive suggestions';
+  const proactiveSuggestions = suggestions.length > 0 ? `\n\n🚀 ${proactiveLabel}:\n${suggestions.join('\n')}` : '';
   
-  const response = `🤖 **AI-assistent för lönetransparens**
+  const response = tr(locale,
+`🤖 **AI-assistent för lönetransparens**
     
 📊 **Jag har analyserat era data:**
 • ${sum.employees} anställda
@@ -663,8 +845,19 @@ ${proactiveSuggestions}
 "Vad händer om vi ökar löner med 5%?"
 "Skapa en handlingsplan för att minska gapet"
 
-🎯 **AI-tip:** Jag blir smartare ju mer ni använder mig! Ställ frågor och låt mig hjälpa er att lösa löneproblem.`;
+🎯 **AI-tip:** Jag blir smartare ju mer ni använder mig! Ställ frågor och låt mig hjälpa er att lösa löneproblem`,
+`🤖 **Pay equity copilot**
 
+📊 **Status:**
+• Employees: ${sum.employees}
+• Roles: ${sum.roles}
+• ${context.hasData ? `Gap: ${context.isHealthy ? '✅ Healthy' : context.criticalIssues > 0 ? '🚨 Critical' : '⚠️ Needs attention'}` : 'No data'}
+
+🔍 Analyze: /analyze • /recommend • /trend • /learn
+🎯 Actions: /action • /simulate • /monitor • /dashboard
+📄 Exports: /report • /alerts
+
+Ask me anything to get started.`);
   return NextResponse.json({ text: response });
 }
 
