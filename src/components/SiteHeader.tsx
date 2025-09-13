@@ -17,9 +17,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-white/90 backdrop-blur-sm shadow-sm">
       <div className="px-4 h-14 w-full flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Noxheim" className="h-10 w-10 rounded-full object-contain" />
-          <div className="text-lg font-semibold tracking-tight">
+        <div className="flex items-center gap-1">
+          <img src="/logo.png" alt="Noxheim" className="h-12 w-12 rounded-full object-contain" />
+          <div className="text-2xl font-semibold tracking-tight">
             <span className="bg-gradient-to-r from-fuchsia-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">Noxheim</span>
           </div>
           <span className="ml-3 hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ring-1 bg-emerald-50 text-emerald-700 ring-emerald-200">
