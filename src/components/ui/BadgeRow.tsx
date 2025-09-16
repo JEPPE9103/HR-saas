@@ -1,9 +1,10 @@
 "use client";
 
+import { ReactNode } from "react";
 import { ShieldCheck, Lock, CheckCircle2 } from "lucide-react";
 
 export function BadgeRow() {
-  const item = (icon: JSX.Element, label: string) => (
+  const item = (icon: ReactNode, label: string) => (
     <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ring-1 ring-slate-200 bg-white text-slate-800">
       {icon}
       {label}
