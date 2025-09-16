@@ -73,6 +73,9 @@ export default function ImportPage() {
         </div>
 
         {/* Import Wizard */}
+        <div className="mb-4 text-sm text-slate-600 text-center">
+          Your data is processed locally until you confirm import.
+        </div>
         <ImportWizard onUseDemo={handleUseDemo} />
       </div>
     </div>

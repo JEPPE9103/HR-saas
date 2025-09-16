@@ -1,28 +1,28 @@
 export const PRICING_PLANS = {
   starter: {
     name: 'Starter',
-    price: 199,
+    price: 499,
     features: [
-      'Upp till 50 anställda',
-      'Import + översikt',
-      'AI-demoinblickar',
+      '≤50 anställda',
+      'Import + Översikt',
+      '1 PDF‑rapport/månad',
       'E‑postsupport',
     ],
     limits: {
       maxEmployees: 50,
-      maxReports: 2,
+      maxReports: 1,
       maxDatasets: 2,
     },
   },
   team: {
     name: 'Team',
-    price: 499,
+    price: 1499,
     features: [
       '51–250 anställda',
-      'AI-drivna insikter',
+      'AI‑insikter',
       'Upp till 5 rapporter/månad',
-      'Slack/Teams integration',
-      'Priority support',
+      'Slack/Teams‑integration',
+      'Prioriterad support',
     ],
     limits: {
       maxEmployees: 250,
@@ -32,13 +32,13 @@ export const PRICING_PLANS = {
   },
   enterprise: {
     name: 'Enterprise',
-    price: 1990,
+    price: 4990,
     features: [
       '251+ anställda',
-      'Avancerade AI-funktioner',
-      'Compliance-specialist',
+      'Avancerad AI (orsaker & simuleringar)',
+      'Compliance‑specialist',
       'Dedikerad support',
-      'Custom integrationer',
+      'Custom‑integrationer',
     ],
     limits: {
       maxEmployees: -1,

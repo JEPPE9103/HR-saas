@@ -5,7 +5,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useI18n } from "@/providers/I18nProvider";
 import { Upload, FileText, BarChart3, Bot, Users, Lightbulb } from "lucide-react";
 import { PageTitle } from "@/components/ui/PageTitle";
-import GapTrendChart from "@/components/overview/GapTrendChart";
+import { PayGapTrend } from "@/components/charts/PayGapTrend";
+import { RoleCompare } from "@/components/charts/RoleCompare";
+import { DepartmentHeatmap } from "@/components/charts/DepartmentHeatmap";
+import { payGapTrend as mockTrend, roleCompare as mockRole, departmentRiskGrid as mockHeat } from "@/lib/mockData";
 import KpiCards from "@/components/overview/KpiCards";
 import AiExplanation from "@/components/overview/AiExplanation";
 import ScenarioAnalysis from "@/components/overview/ScenarioAnalysis";
@@ -140,6 +143,23 @@ export default function OverviewPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        {employees.length === 0 && (
+          <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-5 text-center">
+            <p className="text-slate-700 mb-4">No data yet. Upload your CSV/Excel or try demo data to see the dashboard.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button onClick={handleUploadData} className="btn btn-primary w-full sm:w-auto">Upload data</button>
+              <button onClick={() => {
+                try {
+                  localStorage.setItem('employeesDemo', JSON.stringify([]));
+                  localStorage.setItem('gapTrendDemo', JSON.stringify(mockTrend.map(d=>({ month: d.month, gap_pct: d.gap }))))
+                } catch {}
+                window.dispatchEvent(new StorageEvent('storage', { key: 'gapTrendDemo' } as any));
+                setGapTrend(mockTrend.map(d=>({ month: d.month, gap_pct: d.gap })));
+                setEmployees([]);
+              }} className="btn btn-ghost w-full sm:w-auto">Try demo</button>
+            </div>
+          </div>
+        )}
         {/* Compact Header */}
         <div className="relative overflow-hidden text-center mb-12">
           <div className="relative z-10">
@@ -191,13 +211,18 @@ export default function OverviewPage() {
                     <h3 className="text-2xl font-light text-slate-800 mb-2 tracking-tight">{t('overview.trend.title')}</h3>
                   </div>
                   
-                  {safeGapTrend.length > 0 ? (
-                    <GapTrendChart data={safeGapTrend} />
-                  ) : (
-                    <div className="h-96 bg-slate-50 rounded-xl flex items-center justify-center text-slate-500 font-light">
-                      {t('overview.trend.placeholder')}
-                    </div>
-                  )}
+                  <PayGapTrend data={safeGapTrend.length > 0 ? safeGapTrend.map((d:any)=>({ month: d.month ?? d.mth ?? '', gap: typeof d.gap_pct==='number'? d.gap_pct : 0 })) : mockTrend} />
+                </div>
+              </div>
+
+              {/* Role to Role comparison */}
+              <div className="group relative overflow-hidden bg-gradient-to-br from-slate-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-mint-200/20 to-teal-300/10 rounded-full blur-2xl" />
+                <div className="relative z-10">
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-light text-slate-800 mb-2 tracking-tight">{t('overview.roleCompare.title') ?? 'Role comparison'}</h3>
+                  </div>
+                  <RoleCompare data={mockRole} />
                 </div>
               </div>
 
@@ -312,31 +337,14 @@ export default function OverviewPage() {
               </div>
             )}
             
-            {/* Risk Overview - Compact */}
+            {/* Risk Overview - Heatmap */}
             <div className="group relative overflow-hidden bg-gradient-to-br from-slate-50 to-white rounded-2xl p-5 hover:shadow-xl transition-all duration-300">
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-sage-200/20 to-emerald-300/10 rounded-full blur-2xl" />
               <div className="relative z-10">
                 <div className="text-center mb-4">
                   <h3 className="text-lg font-light text-slate-800">{t('overview.risk.title')}</h3>
                 </div>
-                
-                <div className="space-y-3">
-                  {safeTopDepartments.length > 0 ? (
-                    safeTopDepartments.slice(0, 3).map((dept, index) => (
-                      <div key={dept.department} className="flex items-center justify-between p-2 bg-white/50 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${index === 0 ? 'bg-rose-500' : index === 1 ? 'bg-orange-500' : 'bg-yellow-500'}`}></div>
-                          <span className="text-xs text-slate-800 font-medium">{dept.department}</span>
-                        </div>
-                        <span className="text-xs font-semibold text-slate-800">
-                          {typeof dept.gap === 'number' ? dept.gap.toFixed(1) : '0.0'}%
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-xs text-slate-500 font-light text-center py-3">Ingen riskdata tillgänglig</div>
-                  )}
-                </div>
+                <DepartmentHeatmap data={mockHeat} />
               </div>
             </div>
           </div>

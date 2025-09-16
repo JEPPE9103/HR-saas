@@ -55,18 +55,9 @@ export default function HomePage() {
             
             {/* Modern Compliance Badges */}
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-full">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                <span className="text-sm font-medium text-emerald-700">{t('home.compliance.euCompatible')}</span>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full">
-                <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
-                <span className="text-sm font-medium text-slate-700">{t('home.compliance.gdprSafe')}</span>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full">
-                <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
-                <span className="text-sm font-medium text-slate-700">{t('home.compliance.iso27001')}</span>
-              </div>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium ring-1 ring-slate-200 bg-white text-slate-800">EU Directive Ready</span>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium ring-1 ring-slate-200 bg-white text-slate-800">GDPR Safe</span>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium ring-1 ring-slate-200 bg-white text-slate-800">ISO/IEC 27001</span>
             </div>
           </div>
         </div>
@@ -114,7 +105,7 @@ export default function HomePage() {
           </div>
           
           {/* Right side: Chart */}
-          <div className="h-[500px]">
+          <div className="h-[360px] sm:h-[500px]">
             <EnterpriseHeroChart />
           </div>
         </div>
@@ -193,6 +184,8 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
+        
 
         {/* STRONG CTA SECTION - 2026 Modern Design */}
         <div className="text-center mb-20">

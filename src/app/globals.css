@@ -3,6 +3,11 @@
 html, body { height: 100%; }
 /* Theme tokens (light default, dark overrides) */
 :root{
+  /* Brand tokens */
+  --brand-primary: #5B8DEF; /* blue */
+  --brand-accent: #7AEECD;  /* teal-mint */
+  --brand-support: #A78BFA; /* lavender */
+
   --background: #f9fafb;   /* soft off-white background */
   --card: #ffffff;         /* card surfaces */
   --text: #111827;         /* near black */
@@ -11,7 +16,7 @@ html, body { height: 100%; }
   --bg: var(--background);
   --panel: var(--card);
   --muted: #f3f4f6;
-  --primary:#2563EB;
+  --primary: var(--brand-primary);
   --primary-foreground:#ffffff;
   --success:#16A34A;
   --warning:#F59E0B;
